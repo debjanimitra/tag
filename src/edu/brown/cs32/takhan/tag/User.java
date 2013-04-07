@@ -1,5 +1,8 @@
 package edu.brown.cs32.takhan.tag;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.google.common.collect.*;
 
 public class User {
@@ -23,6 +26,10 @@ public class User {
 		if(!_dataMap.containsEntry(website, tag)){
 			_dataMap.put(website, tag);
 		}
+	}
+	
+	public Collection<String> getAllData(){
+		return _dataMap.values();
 	}
 
 }
