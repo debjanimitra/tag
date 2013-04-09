@@ -1,14 +1,15 @@
 package edu.brown.cs32.takhan.tag;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class User {
 	
 	private String _userID;
-	private ListMultimap<String,String> _dataMap;
+	private ListMultimap<String,TagData> _dataMap;
 	
 	
 	public User(){
@@ -22,13 +23,13 @@ public class User {
 		return _userID;
 	}
 	
-	public void addData(String website, String tag){
-		if(!_dataMap.containsEntry(website, tag)){
-			_dataMap.put(website, tag);
+	public void addData(String website, TagData data){
+		if(!_dataMap.containsEntry(website, data)){
+			_dataMap.put(website, data);
 		}
 	}
 	
-	public Collection<String> getAllData(){
+	public Collection<TagData> getAllData(){
 		return _dataMap.values();
 	}
 
