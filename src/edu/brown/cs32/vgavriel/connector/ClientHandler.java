@@ -41,17 +41,19 @@ public class ClientHandler extends Thread {
 	public void run() {
 		try {					
 			Message message = (Message) _input.readObject();
-			while(message != null && _running){
-				Data data = message.getData();
-				User user = message.getUser();				
-				if(user != null){
-				/*
-				 * do something with the User class
-				 */
-				} else if (data != null) {
-					/*
-					 * do something with the Data class
-					 */
+			while(_running){
+				if(message != null){
+					Data data = message.getData();
+					User user = message.getUser();				
+					if(user != null){
+						/*
+						 * do something with the User class
+						 */
+					} else if (data != null) {
+						/*
+						 * do something with the Data class
+						 */
+					}
 				}
 				message = (Message) _input.readObject();
 			}
