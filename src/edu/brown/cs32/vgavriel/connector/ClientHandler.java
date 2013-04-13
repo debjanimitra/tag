@@ -1,19 +1,15 @@
 package edu.brown.cs32.vgavriel.connector;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 
+
+import edu.brown.cs32.takhan.tag.Data;
 import edu.brown.cs32.takhan.tag.User;
 
-public class ClientHandler {
-	private ClientPool _pool;
+public class ClientHandler extends Thread {
 	private Socket _clientSocket;
 	private ObjectInputStream _input;
 	private ObjectOutputStream _output;
@@ -27,15 +23,12 @@ public class ClientHandler {
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if pool or client is null
 	 */
-	public ClientHandler(ClientPool pool, Socket clientSocket) throws IOException {
-		if (pool == null || clientSocket == null) {
+	public ClientHandler(Socket clientSocket) throws IOException {
+		if (clientSocket == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
-
-		_pool = pool;
 		_clientSocket = clientSocket;
 
-		//TODO: Set up the buffered reader and writer for the sockets to communicate with
 		_input = new ObjectInputStream(_clientSocket.getInputStream());
 		_output = new ObjectOutputStream(_clientSocket.getOutputStream());	
 		_running = true;
@@ -46,16 +39,23 @@ public class ClientHandler {
 	 * interpreted as the cleint's user-name.
 	 */
 	public void run() {
-		//TODO: Get the inputs sent by client and broadcast it to the rest of the
-		//clients. 
 		try {					
-			//TODO: The first input is the username of the client.
-			User user = (User) _input.readObject();
-			if(user != null){
-
-				/*
-				 * do something with the User class
-				 */
+			Message message = (Message) _input.readObject();
+			while(_running){
+				if(message != null){
+					Data data = message.getData();
+					User user = message.getUser();				
+					if(user != null){
+						/*
+						 * do something with the User class
+						 */
+					} else if (data != null) {
+						/*
+						 * do something with the Data class
+						 */
+					}
+				}
+				message = (Message) _input.readObject();
 			}
 			kill();
 
@@ -70,10 +70,9 @@ public class ClientHandler {
 	 * 
 	 * @param message text to send
 	 */
-	public void send(User user) {
-		//TODO: Set up the methods, so it will send the message to the client
+	public void send(Message message) {
 		try {
-			_output.writeObject(user);
+			_output.writeObject(message);
 			_output.flush();
 		} catch (IOException e) {
 			System.err.println("ERROR: Can't write to Client!");
@@ -88,16 +87,17 @@ public class ClientHandler {
 	 */
 	public void kill() {
 		try{
-			//TODO: Close all the streams after the client disconnects.
 			_running = false;
 			_clientSocket.close();
 			_input.close();
 			_output.close();
 		} catch (IOException e) {
-			if(_running)
-				System.err.println("IO Problem ClientHandler");
-
+			//there is really nothing we can do here.
 		}
 	}
+	/*
+	public String getUserName(){
+		return _userName;
+	}*/
 
 }
