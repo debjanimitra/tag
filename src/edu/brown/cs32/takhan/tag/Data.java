@@ -4,7 +4,7 @@ public class Data implements TagData{
 	
 	private String _start;
 	private String _end;
-	private String _type;
+	private String _url;
 	private String _id;
 	private String _class;
 	private String _text;
@@ -13,7 +13,7 @@ public class Data implements TagData{
 		_start = start;
 		_end = end;
 		_text = text;
-		_type = type;
+		_url = type;
 	}
 	
 	public String getStart(){
