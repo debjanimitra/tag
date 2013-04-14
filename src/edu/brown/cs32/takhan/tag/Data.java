@@ -1,34 +1,21 @@
 package edu.brown.cs32.takhan.tag;
 
 public class Data implements TagData{
-	
-	private String _start;
-	private String _end;
+
 	private String _url;
 	private String _id;
 	private String _class;
 	private String _text;
+	private final String _username;
 	
-	public Data(String text, String url){
+	public Data(String text, String url, String id, String username){
 		_text = text;
 		_url = url;
+		_username = username;
+		_id = id;
 	}
 	
-	public String getStart(){
-		return _start;
-	}
-	
-	public String getEnd(){
-		return _end;
-	}
-	
-	public void setStart(String start){
-		_start = start;
-	}
-	
-	public void setEnd(String end){
-		_end = end;
-	}
+
 	
 	public void setClass(String objClass){
 		_class = objClass;

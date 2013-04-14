@@ -48,17 +48,29 @@ public class User {
 		}
 	}
 	
-	
+	/**
+	 * Returns the user's ID 
+	 * @return
+	 */
 	public String getID(){
 		return _userID;
 	}
 	
-	public void addData(String website, TagData data){
-		if(!_dataMap.containsEntry(website, data)){
-			_dataMap.put(website, data);
+	/**
+	 * Adds data to the user's current hashmap of data.
+	 * @param url
+	 * @param data
+	 */
+	public void addData(String url, TagData data){
+		if(!_dataMap.containsEntry(url, data)){
+			_dataMap.put(url, data);
 		}
 	}
 	
+	/**
+	 * Returns all the data items that are currently stored. 
+	 * @return
+	 */
 	public Collection<TagData> getAllData(){
 		return _dataMap.values();
 	}
