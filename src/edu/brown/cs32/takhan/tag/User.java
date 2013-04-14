@@ -15,8 +15,6 @@ public class User {
 	
 	public User(){
 		_dataMap = ArrayListMultimap.create();
-		
-		
 	}
 	
 	/**
