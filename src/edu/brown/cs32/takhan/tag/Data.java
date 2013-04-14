@@ -9,11 +9,9 @@ public class Data implements TagData{
 	private String _class;
 	private String _text;
 	
-	public Data(String start, String end, String text, String type){
-		_start = start;
-		_end = end;
+	public Data(String text, String url){
 		_text = text;
-		_url = type;
+		_url = url;
 	}
 	
 	public String getStart(){

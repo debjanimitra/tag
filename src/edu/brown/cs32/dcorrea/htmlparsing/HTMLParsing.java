@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
-import edu.brown.cs032.takhan.tag;
+import edu.brown.cs32.takhan.tag.*;
 
 public class HTMLParsing {
 	private Document _doc;
+	private String _url;
 	
 	public HTMLParsing(String url) {
 		try {
+			_url = url;
 			_doc = Jsoup.connect(url).get();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -37,7 +39,7 @@ public class HTMLParsing {
 			String text = e.text();
 			//Storing process
 			if (text.contains(enteredText)) {
-				
+				Data dStore = new Data(text, _url);
 			}
 			return text;
 		}
@@ -45,18 +47,27 @@ public class HTMLParsing {
 		for (Element e : divs) {
 			String text = e.text();
 			//Storing process
+			if (text.contains(enteredText)) {
+				Data dStore = new Data(text, _url);
+			}
 			return text;
 		}
 		//list elements
 		for (Element e : listEls) {
 			String text = e.text();
 			//Storing process
+			if (text.contains(enteredText)) {
+				Data dStore = new Data(text, _url);
+			}
 			return text;
 		}
 		//paragraphs
 		for (Element e : paragraphs) {
 			String text = e.text();
 			//Storing process
+			if (text.contains(enteredText)) {
+				Data dStore = new Data(text, _url);
+			}
 			return text;
 		}
 		return null;
@@ -79,7 +90,6 @@ public class HTMLParsing {
 				for (Element e : id) {
 					String text = e.text();
 					/*if () { 
-						// DAVID THIS IS WHERE YOU STOPPED WORKING I THINK (viktor)
 					}*/
 				}
 			}
