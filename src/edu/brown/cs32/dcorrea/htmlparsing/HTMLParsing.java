@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
+import edu.brown.cs032.takhan.tag;
 
 public class HTMLParsing {
 	private Document _doc;
@@ -35,6 +36,9 @@ public class HTMLParsing {
 		for (Element e : links) {
 			String text = e.text();
 			//Storing process
+			if (text.contains(enteredText)) {
+				
+			}
 			return text;
 		}
 		//divs
