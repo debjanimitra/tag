@@ -45,6 +45,8 @@ public class Server {
 
 		while(_running){
 			try {
+				Database database = new Database();
+				database.start();
 				Socket clientConnection = _serverSocket.accept();
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
