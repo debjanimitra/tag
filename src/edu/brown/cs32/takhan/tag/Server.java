@@ -48,7 +48,7 @@ public class Server {
 				Socket clientConnection = _serverSocket.accept();
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
-					ClientHandler ch = new ClientHandler(clientConnection);
+					ClientHandler ch = new ClientHandler(clientConnection, _clientPool);
 					_clientPool.add("temporary, this needs to be changed!", ch); // WE NEED TO KNOW THE USER-ID SOMEHOW!
 					ch.start();
 				}
