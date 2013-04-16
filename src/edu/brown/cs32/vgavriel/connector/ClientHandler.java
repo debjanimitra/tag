@@ -11,6 +11,8 @@ import edu.brown.cs32.takhan.tag.User;
 
 public class ClientHandler extends Thread {
 	private Socket _clientSocket;
+	private ClientPool _clientPool;
+	private String _userID;
 	private ObjectInputStream _input;
 	private ObjectOutputStream _output;
 	private boolean _running;
@@ -23,15 +25,32 @@ public class ClientHandler extends Thread {
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if pool or client is null
 	 */
-	public ClientHandler(Socket clientSocket) throws IOException {
+	public ClientHandler(Socket clientSocket, ClientPool clientPool) throws IOException {
 		if (clientSocket == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
 		_clientSocket = clientSocket;
+		_clientPool = clientPool;
 
 		_input = new ObjectInputStream(_clientSocket.getInputStream());
 		_output = new ObjectOutputStream(_clientSocket.getOutputStream());	
 		_running = true;
+	}
+	
+	/**
+	 * is the first thing executed upon the start of this thread.
+	 * This method waits for the Client to send its credentials,
+	 * so that the server can add the credentials to the ClientPool,
+	 * as well as 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	private void handShake() throws ClassNotFoundException, IOException{
+		Message message = (Message) _input.readObject();
+		String userID = message.getUserID();
+		if(message != null && userID != null){
+			_userID = userID;
+		}
 	}
 
 	/**
@@ -40,6 +59,7 @@ public class ClientHandler extends Thread {
 	 */
 	public void run() {
 		try {					
+			handShake();
 			Message message = (Message) _input.readObject();
 			while(_running){
 				if(message != null){
@@ -57,11 +77,13 @@ public class ClientHandler extends Thread {
 				}
 				message = (Message) _input.readObject();
 			}
-			kill();
+			
 
 		}catch (ClassNotFoundException | IOException e) {
 			System.err.println(e.getMessage());
+			
 		}
+		kill();
 
 	}
 
@@ -91,6 +113,7 @@ public class ClientHandler extends Thread {
 			_clientSocket.close();
 			_input.close();
 			_output.close();
+			_clientPool.remove(_userID);
 		} catch (IOException e) {
 			//there is really nothing we can do here.
 		}

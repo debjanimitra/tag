@@ -10,21 +10,21 @@ import edu.brown.cs32.takhan.tag.User;
 
 public class Message implements Serializable {
 	private static final long serialVersionUID = 938459082390485345L;
-	private User _user;
-	private Data _data;
+	private User _user = null;
+	private Data _data = null;
+	private String _userID = null;
 	
 	public Message(User user){
 		super();
 		_user = user;
-		_data = null;
 	}
 	public Message(Data data){
-		super();
-		_user = null;
 		_data = data;
 	}
+	public Message(String userID){
+		_userID = userID;
+	}
 	public Message(User user, Data data){
-		super();
 		_user = user;
 		_data = data;
 	}
@@ -35,6 +35,10 @@ public class Message implements Serializable {
 	
 	Data getData(){
 		return _data;
+	}
+	
+	String getUserID(){
+		return _userID;
 	}
 	
 	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException{
