@@ -40,16 +40,19 @@ public class ClientHandler extends Thread {
 	/**
 	 * is the first thing executed upon the start of this thread.
 	 * This method waits for the Client to send its credentials,
-	 * so that the server can add the credentials to the ClientPool,
-	 * as well as 
+	 * so that the server can add the credentials to the ClientPool
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
 	private void handShake() throws ClassNotFoundException, IOException{
 		Message message = (Message) _input.readObject();
-		String userID = message.getUserID();
-		if(message != null && userID != null){
+		String userID;
+		if(message != null && (userID = message.getUserID()) != null){
 			_userID = userID;
+			_clientPool.add(_userID, this);
+		} else {
+			System.err.println("The first message HAS to contain ONLY the user credentials");
+			kill();
 		}
 	}
 
@@ -59,9 +62,9 @@ public class ClientHandler extends Thread {
 	 */
 	public void run() {
 		try {					
-			handShake();
-			Message message = (Message) _input.readObject();
+			handShake();			
 			while(_running){
+				Message message = (Message) _input.readObject();
 				if(message != null){
 					Data data = message.getData();
 					User user = message.getUser();				
@@ -75,7 +78,7 @@ public class ClientHandler extends Thread {
 						 */
 					}
 				}
-				message = (Message) _input.readObject();
+				
 			}
 			
 
@@ -88,7 +91,7 @@ public class ClientHandler extends Thread {
 	}
 
 	/**
-	 * Send a string to the client via the socket
+	 * Send an instance of Message to the client via the socket
 	 * 
 	 * @param message text to send
 	 */
@@ -118,9 +121,9 @@ public class ClientHandler extends Thread {
 			//there is really nothing we can do here.
 		}
 	}
-	/*
-	public String getUserName(){
-		return _userName;
-	}*/
+	
+	public String getUserID(){
+		return _userID;
+	}
 
 }
