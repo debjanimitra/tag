@@ -49,6 +49,7 @@ public class Database{
 		if(!_dataMap.containsKey(id)){
 			_dataMap.put(id, user);
 		}
+		this.updateFile();
 	}
 	
 	public synchronized Collection<User> getAllUsers(){

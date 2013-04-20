@@ -13,8 +13,9 @@ public class User {
 	private ListMultimap<String,TagData> _dataMap;
 	
 	
-	public User(){
+	public User(String id){
 		_dataMap = ArrayListMultimap.create();
+		_userID = id;
 	}
 	
 	/**
