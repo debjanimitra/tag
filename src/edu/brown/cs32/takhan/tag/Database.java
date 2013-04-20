@@ -11,9 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 
-public class Database extends Thread {
+public class Database{
 	
 	private HashMap<String,User> _dataMap;
 	private final String fileName = "data.ser";
@@ -23,36 +24,35 @@ public class Database extends Thread {
 	public Database(){
 		try{
 			OutputStream file = new FileOutputStream(fileName);
-		    OutputStream buffer = new BufferedOutputStream(file);
-		    ObjectOutput output = new ObjectOutputStream(buffer);
+		    OutputStream outputBuffer = new BufferedOutputStream(file);
+		    ObjectOutput output = new ObjectOutputStream(outputBuffer);
 		    _output = output;
+			InputStream inputFile;
+			try {
+			inputFile = new FileInputStream(fileName);
+			InputStream buffer = new BufferedInputStream(inputFile);
+			ObjectInput input = new ObjectInputStream(buffer);
+			_dataMap = (HashMap<String,User>) input.readObject();
+			}
+			catch(IOException | ClassNotFoundException e){
+				_dataMap = new HashMap<>();
+			}
+			
 		}
 		catch(IOException e){
 			
 		}
 	}
 	
-	public void run(){
-		InputStream file;
-		try {
-		file = new FileInputStream(fileName);
-		InputStream buffer = new BufferedInputStream(file);
-		ObjectInput input = new ObjectInputStream(buffer);
-		_dataMap = (HashMap<String,User>) input.readObject();
-		}
-		catch(IOException | ClassNotFoundException e){
-			_dataMap = new HashMap<>();
-		}
-		while(true){
-			
-		}
-			
-	}
 	
 	public synchronized void addUser(User user, String id){
 		if(!_dataMap.containsKey(id)){
 			_dataMap.put(id, user);
 		}
+	}
+	
+	public synchronized Collection<User> getAllUsers(){
+		return _dataMap.values();
 	}
 	
 	public synchronized void updateFile(){

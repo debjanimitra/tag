@@ -1,10 +1,14 @@
 package edu.brown.cs32.takhan.tag;
 
-import edu.brown.cs32.vgavriel.connector.*;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.brown.cs32.vgavriel.connector.ClientHandler;
+import edu.brown.cs32.vgavriel.connector.ClientPool;
+import edu.brown.cs32.vgavriel.connector.Message;
 
 /**
  * 
@@ -42,11 +46,11 @@ public class Server {
 		_running = true;
 		//TODO: Set up a while loop to receive all the socket connection
 		//requests made by a client
-
+		Database database = new Database();
+		Checker checker = new Checker(database,this);
+		checker.start();
 		while(_running){
 			try {
-				Database database = new Database();
-				database.start();
 				Socket clientConnection = _serverSocket.accept();
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
@@ -72,5 +76,28 @@ public class Server {
 		_running = false;
 		_clientPool.killall();
 		_serverSocket.close();
+	}
+	
+	/**
+	 * Sends notifications to the clients that are currently
+	 * connected to the server. Returns the list of all the
+	 * remaining notifications. 
+	 * @param list
+	 * @return 
+	 */
+	public List<Notification> pushNotifications(List<Notification> list){
+		List<Notification> returnList = new ArrayList<>();
+		for(Notification notif:list){
+			if(_clientPool.isClientConnected(notif.getUser())){
+				ClientHandler handler = _clientPool.getClient(notif.getUser());
+				Message message = new Message(notif);
+				handler.send(message);
+			}
+			else{
+				returnList.add(notif);
+			}
+		}
+		return returnList;
+		
 	}
 }
