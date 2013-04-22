@@ -89,17 +89,30 @@ public class HTMLParsing {
 				Elements id = doc.select(eAttr.get(1));
 				for (Element e : id) {
 					String text = e.text();
-					/*if () { 
-					}*/
+					if (text.contains(eAttr.get(3))) { 
+						//what should we return?
+					}
 				}
 			}
 			//check the class
 			else if (eAttr.get(2) != null) {
 				Elements classes = doc.select(eAttr.get(1));
+				for (Element e : classes) {
+					String text = e.text();
+					if (text.contains(eAttr.get(3))) { 
+						//what should we return?
+					}
+				}
 			}
 			//check everything
 			else {
 				Elements all = doc.select("*");
+				for (Element e : all) {
+					String text = e.text();
+					if (text.contains(eAttr.get(3))) { 
+						//what should we return?
+					}
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
