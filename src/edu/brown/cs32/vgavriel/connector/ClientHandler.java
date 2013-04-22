@@ -1,9 +1,11 @@
 package edu.brown.cs32.vgavriel.connector;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 
 import edu.brown.cs32.takhan.tag.Data;
@@ -32,8 +34,9 @@ public class ClientHandler extends Thread {
 		_clientSocket = clientSocket;
 		_clientPool = clientPool;
 
-		_input = new ObjectInputStream(_clientSocket.getInputStream());
 		_output = new ObjectOutputStream(_clientSocket.getOutputStream());	
+		_output.flush();
+		_input = new ObjectInputStream(_clientSocket.getInputStream());		
 		_running = true;
 	}
 	
@@ -44,15 +47,17 @@ public class ClientHandler extends Thread {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	private void handShake() throws ClassNotFoundException, IOException{
+	public String handShake() throws ClassNotFoundException, IOException{
 		Message message = (Message) _input.readObject();
 		String userID;
-		if(message != null && (userID = message.getUserID()) != null){
+		if(message != null && message.getContent() == MessageContent.USERID && (userID = (String) message.getObject()) != null){
 			_userID = userID;
 			_clientPool.add(_userID, this);
+			return userID;
 		} else {
 			System.err.println("The first message HAS to contain ONLY the user credentials");
 			kill();
+			return null;
 		}
 	}
 
@@ -61,33 +66,59 @@ public class ClientHandler extends Thread {
 	 * interpreted as the cleint's user-name.
 	 */
 	public void run() {
-		try {					
-			handShake();			
-			while(_running){
-				Message message = (Message) _input.readObject();
-				if(message != null){
-					Data data = message.getData();
-					User user = message.getUser();				
-					if(user != null){
-						/*
-						 * do something with the User class
-						 */
-					} else if (data != null) {
-						/*
-						 * do something with the Data class
-						 */
-					}
-				}
-				
-			}
-			
+		try {						
+			Message message = (Message) _input.readObject();
+			while(message != null){
+				send(processMessage(message));
+				message = (Message) _input.readObject();
+			}			
 
-		}catch (ClassNotFoundException | IOException e) {
-			System.err.println(e.getMessage());
-			
+		} catch(EOFException | SocketException e){
+			System.out.println("A client disconnected.");
+			_running = false;
+			kill();
 		}
-		kill();
+		catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("IO Problem ClientHandler");
+		} catch (ClassNotFoundException e){
+			System.err.println("The class should be Message which should be found.");
+		}
 
+	}
+	
+	
+	private Message processMessage(Message message){
+		Message result = null;
+		if(message == null){
+			return null;
+		}
+		
+		switch(message.getContent()){
+		case DATA:
+			/**
+			 * TODO: message has an instance of Data, so process it and return a confirmation
+			 */
+			break;
+		case NOTIFICATION:
+			/**
+			 * TODO: message has an instance of Notification, so process it and return a confirmation
+			 */
+			break;
+		case USER:
+			/**
+			 * TODO: message has an instance of User, so process it and return a confirmation
+			 */
+			break;
+		default:
+			/**
+			 * TODO: message has an unused content, like USERID or DONE
+			 * maybe return an error-Message here
+			 */
+			break;
+		}
+		
+		return result;
 	}
 
 	/**

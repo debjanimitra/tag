@@ -15,7 +15,7 @@ import edu.brown.cs32.vgavriel.connector.Message;
  * @author vgavriel
  *
  */
-public class Server {
+public class Server extends Thread{
 	private int _portNumber;
 	private ServerSocket _serverSocket;
 	private ClientPool _clientPool;
@@ -36,7 +36,6 @@ public class Server {
 		_portNumber = portNumber;
 		_clientPool = new ClientPool();
 		_serverSocket = new ServerSocket(_portNumber);
-		//TODO: Set up a server socket that will  listen to socket connection requests
 	}
 
 	/**
@@ -44,8 +43,6 @@ public class Server {
 	 */
 	public void run() {
 		_running = true;
-		//TODO: Set up a while loop to receive all the socket connection
-		//requests made by a client
 		Database database = new Database();
 		Checker checker = new Checker(database,this);
 		checker.start();
@@ -57,6 +54,7 @@ public class Server {
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
 					ClientHandler ch = new ClientHandler(clientConnection, _clientPool);
+					String userID = ch.handShake();
 					_clientPool.add("temporary, this needs to be changed!", ch); // WE NEED TO KNOW THE USER-ID SOMEHOW!
 					ch.start();
 				}

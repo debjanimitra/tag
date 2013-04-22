@@ -1,8 +1,5 @@
 package edu.brown.cs32.vgavriel.connector;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.brown.cs32.takhan.tag.Data;
@@ -10,14 +7,30 @@ import edu.brown.cs32.takhan.tag.Notification;
 import edu.brown.cs32.takhan.tag.User;
 
 public class Message implements Serializable {
-	private static final long serialVersionUID = 938459082390485345L;
-	private User _user = null;
+	private static final long serialVersionUID = 1L;
+	
+	private MessageContent content;
+	private Object object;
+	
+	public Message(MessageContent c, Object o){
+		content = c;
+		object = o;
+	}
+	
+	public MessageContent getContent(){
+		return content;
+	}
+	
+	public Object getObject(){
+		return object;
+	}
+	
+/*	private User _user = null;
 	private Data _data = null;
 	private Notification _notif = null;
 	private String _userID = null;
 	
 	public Message(User user){
-		super();
 		_user = user;
 	}
 	public Message(Data data){
@@ -50,13 +63,5 @@ public class Message implements Serializable {
 	
 	String getUserID(){
 		return _userID;
-	}
-	
-	private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException{
-		ois.defaultReadObject();
-	}
-	
-	private void writeObject(ObjectOutputStream oos) throws IOException{
-		oos.defaultWriteObject();
-	}
+	}*/
 }
