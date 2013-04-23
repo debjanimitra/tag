@@ -6,7 +6,7 @@ package edu.brown.cs32.takhan.tag;
  * @author takhan
  *
  */
-public class Notification {
+public class Notification { //might need to implement Serializable
 	
 	private String _url;
 	private String _user;

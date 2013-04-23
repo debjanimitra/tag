@@ -6,9 +6,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.brown.cs32.vgavriel.connector.ClientHandler;
-import edu.brown.cs32.vgavriel.connector.ClientPool;
-import edu.brown.cs32.vgavriel.connector.Message;
+import edu.brown.cs32.vgavriel.connectorOnServer.ClientHandler;
+import edu.brown.cs32.vgavriel.connectorOnServer.ClientPool;
+import edu.brown.cs32.vgavriel.connectorOnServer.Message;
+import edu.brown.cs32.vgavriel.connectorOnServer.MessageContent;
 
 /**
  * 
@@ -54,15 +55,12 @@ public class Server extends Thread{
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
 					ClientHandler ch = new ClientHandler(clientConnection, _clientPool);
-					String userID = ch.handShake();
-					_clientPool.add("temporary, this needs to be changed!", ch); // WE NEED TO KNOW THE USER-ID SOMEHOW!
-					ch.start();
+					ch.start();								
 				}
 			} catch (IOException e) {
 				if(_running)
 					System.err.println("Problem with connecting to client");
 			}
-
 		}
 	}
 
@@ -90,7 +88,7 @@ public class Server extends Thread{
 		for(Notification notif:list){
 			if(_clientPool.isClientConnected(notif.getUser())){
 				ClientHandler handler = _clientPool.getClient(notif.getUser());
-				Message message = new Message(notif);
+				Message message = new Message(MessageContent.NOTIFICATION, notif);
 				handler.send(message);
 			}
 			else{

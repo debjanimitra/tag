@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-public class User {
+public class User { // might need to implement Serializable
 	
 	private String _userID;
 	private String _password;

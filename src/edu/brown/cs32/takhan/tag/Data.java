@@ -1,6 +1,6 @@
 package edu.brown.cs32.takhan.tag;
 
-public class Data implements TagData{
+public class Data implements TagData{ // might need to implement Serializable
 
 	private String _url;
 	private String _id;
