@@ -127,36 +127,34 @@ public class ClientHandler extends Thread {
 	 * @return the message to be returned to the clientside
 	 */
 	private Message processMessage(Message message){
-		Message result = null;
+		
 		if(message == null){
 			return null;
 		}
 
 		switch(message.getContent()){
 		case DATA:
+			Data data = (Data) message.getObject();
+			User user = _database.getUser(data.getUser());
+			if(user.addData(data.getURL(), data)){
+				return new Message(MessageContent.DONE, null);
+			} else {
+				return new Message(MessageContent.ERROR_RECEIVE_TAGALREADYEXISTS, null);
+			}
 			/**
 			 * TODO: message has an instance of Data, so process it and return a confirmation
 			 */
-			break;
-		case NOTIFICATION:
-			/**
-			 * TODO: message has an instance of Notification, so process it and return a confirmation
-			 */
-			break;
-		case USER:
-			/**
-			 * TODO: message has an instance of User, so process it and return a confirmation
-			 */
-			break;
+			// break; never reached
 		default:
+			return new Message(MessageContent.ERROR_RECEIVE_INVALIDDATA, null);
 			/**
 			 * TODO: message has an unused content, like USERID or DONE
 			 * maybe return an error String containing Message here
 			 */
-			break;
+			// break; never reached
 		}
 
-		return result;
+		// return result; never reached
 	}
 
 	/**

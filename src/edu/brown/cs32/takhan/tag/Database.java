@@ -59,6 +59,10 @@ public class Database{
 		return _dataMap.values();
 	}
 	
+	public synchronized User getUser(String id){
+		return _dataMap.get(id);
+	}
+	
 	public synchronized void updateFile(){
 		try {
 			_output.writeObject(_dataMap);

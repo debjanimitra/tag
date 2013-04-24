@@ -62,10 +62,22 @@ public class User { // might need to implement Serializable
 	 * @param url
 	 * @param data
 	 */
-	public void addData(String url, Data data){
-		if(!_dataMap.containsEntry(url, data)){
-			_dataMap.put(url, data);
+	public boolean addData(String url, Data data){
+		boolean contains = false;
+		if(_dataMap.containsKey(url)){
+			Collection<Data> dataCollection = _dataMap.get(url);
+			for(Data item:dataCollection){
+				if(item.getText().equals(data.getText())&&item.getID().equals(data.getID())&item.getClassObject().equals(data.getClassObject())){
+					contains = true;
+					break;
+				}
+			}
 		}
+		if(!contains){
+			_dataMap.put(url, data);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
