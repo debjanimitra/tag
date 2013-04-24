@@ -30,14 +30,25 @@ public class Checker extends Thread {
 			for(User user:users){
 				Collection<Data> data = user.getAllData();
 				for(Data item:data){
-					boolean update = false;
+					//boolean update = false;
+					String update = "";
 					// Add code here to check for an update
 					HTMLParsing htmlP = new HTMLParsing(item.getURL());
 					update = htmlP.checkUpdate(item);
-					if(update){
-						Notification message = new Notification(item.getURL(),item.getUser());
-						_list.add(message);
+					switch(update){
+						case "true":
+							Notification message = new Notification(item.getURL(),item.getUser());
+							_list.add(message);
+							break;
+						case "false":
+							break;
+						case "lost":
+							break;
 					}
+					//if(update){
+						//Notification message = new Notification(item.getURL(),item.getUser());
+						//_list.add(message);
+					//}
 				}
 			}
 			if(!_list.isEmpty()){
