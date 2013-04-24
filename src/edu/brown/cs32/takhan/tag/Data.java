@@ -31,6 +31,10 @@ public class Data implements TagData{ // might need to implement Serializable
 		_class = objClass;
 	}
 	
+	public boolean getPerm(){
+		return _permanent;
+	}
+	
 	public String getClassObject(){
 		return _class;
 	}

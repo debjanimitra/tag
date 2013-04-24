@@ -69,6 +69,19 @@ public class User { // might need to implement Serializable
 	}
 	
 	/**
+	 * Method to remove a specific data object from the hashmap 
+	 * @param toRemove
+	 */
+	public void removeData(Data toRemove){
+		Collection<Data> dataList = _dataMap.get(toRemove.getURL());
+		for(Data data:dataList){
+			if(data.getID().equals(toRemove.getID())&&data.getText().equals(toRemove.getText())&&data.getClassObject().equals(toRemove.getClassObject())){
+				_dataMap.remove(data.getURL(),data);
+			}
+		}
+	}
+	
+	/**
 	 * Returns all the data items that are currently stored. 
 	 * @return
 	 */

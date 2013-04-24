@@ -10,6 +10,7 @@ public class Notification { //might need to implement Serializable
 	
 	private String _url;
 	private String _user;
+	private boolean _lost;
 	
 	/**
 	 * Initializes a new notification that stores strings
@@ -18,7 +19,8 @@ public class Notification { //might need to implement Serializable
 	 * @param url
 	 * @param user
 	 */
-	public Notification(String url, String user){
+	public Notification(String url, String user, boolean lost){
+		_lost = lost;
 		_user = user;
 		_url = url;
 	}
@@ -37,6 +39,22 @@ public class Notification { //might need to implement Serializable
 	 */
 	public String getURL(){
 		return _url;
+	}
+	
+	/**
+	 * Sets the lost boolean 
+	 * @param lost
+	 */
+	public void setLost(boolean lost){
+		_lost = lost;
+	}
+	
+	/**
+	 * Returns the lost boolean 
+	 * @return
+	 */
+	public boolean getLost(){
+		return _lost;
 	}
 
 }

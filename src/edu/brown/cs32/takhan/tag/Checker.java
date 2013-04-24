@@ -37,12 +37,18 @@ public class Checker extends Thread {
 					update = htmlP.checkUpdate(item);
 					switch(update){
 						case "true":
-							Notification message = new Notification(item.getURL(),item.getUser());
+							Notification message = new Notification(item.getURL(),item.getUser(), false);
 							_list.add(message);
+							if(!item.getPerm()){
+								user.removeData(item);
+							}
 							break;
 						case "false":
 							break;
 						case "lost":
+							Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
+							_list.add(lostMessage);
+							user.removeData(item);
 							break;
 					}
 					//if(update){
