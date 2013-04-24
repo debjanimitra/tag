@@ -87,7 +87,7 @@ public class HTMLParsing {
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
-					if (text.contains(dObj.getText())) {
+					if (text.equals(dObj.getText())) {
 						change = false;
 						//what should we return?
 					}
@@ -96,9 +96,12 @@ public class HTMLParsing {
 			//check the class
 			else if (dObj.getClassObject() != null && change) {
 				Elements classes = doc.select(dObj.getID());
+				if (classes.) {
+					
+				}
 				for (Element e : classes) {
 					String text = e.text();
-					if (text.contains(dObj.getText())) {
+					if (text.equals(dObj.getText())) {
 						change = false; 
 						//what should we return? 
 					}
@@ -109,10 +112,13 @@ public class HTMLParsing {
 				Elements all = doc.select("*");
 				for (Element e : all) {
 					String text = e.text();
-					if (text.contains(dObj.getText())) { 
+					if (text.equals(dObj.getText())) { 
 						change = false;
 						//what should we return?
 					}
+				}
+				if (change == false) {
+					change = this.checkForAddition(dObj);
 				}
 			}
 			//If the element is not there we should notify the user
@@ -126,6 +132,18 @@ public class HTMLParsing {
 			e.printStackTrace();
 		}
 		return false;
-		
+	}
+	
+	public boolean checkForAddition(Data dObj) {
+		Document prevDoc = dObj.getDocument();
+		Element prevBody = prevDoc.body();
+		Element currBody = _doc.body();
+		String pBText = prevBody.text();
+		String cBText = currBody.text();
+		if (pBText.length() > cBText.length()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

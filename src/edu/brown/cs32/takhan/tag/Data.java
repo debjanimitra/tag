@@ -1,4 +1,7 @@
 package edu.brown.cs32.takhan.tag;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
+import org.jsoup.select.Elements;
 
 public class Data implements TagData{ // might need to implement Serializable
 
@@ -7,15 +10,20 @@ public class Data implements TagData{ // might need to implement Serializable
 	private String _class;
 	private String _text;
 	private final String _username;
+	private Document _doc;
 	
-	public Data(String text, String url, String id, String username){
+	
+	public Data(String text, String url, String id, String username, Document doc){
 		_text = text;
 		_url = url;
 		_username = username;
 		_id = id;
+		_doc = doc;
 	}
 	
-
+	public Document getDocument() {
+		return _doc;
+	}
 	
 	public void setClass(String objClass){
 		_class = objClass;
