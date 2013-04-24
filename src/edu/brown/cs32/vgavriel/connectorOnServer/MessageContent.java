@@ -10,5 +10,5 @@ package edu.brown.cs32.vgavriel.connectorOnServer;
  *
  */
 public enum MessageContent {
-	USER, DATA, NOTIFICATION, USERID, DONE
+	USER, DATA, NOTIFICATION, USERID, DONE, NEWUSERID
 }
