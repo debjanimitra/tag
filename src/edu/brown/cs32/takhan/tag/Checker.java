@@ -3,6 +3,7 @@ package edu.brown.cs32.takhan.tag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import edu.brown.cs32.dcorrea.htmlparsing.*;
 
 public class Checker extends Thread {
 	
@@ -27,12 +28,14 @@ public class Checker extends Thread {
 		while(true){
 			Collection<User> users = _database.getAllUsers();
 			for(User user:users){
-				Collection<TagData> data = user.getAllData();
-				for(TagData item:data){
+				Collection<Data> data = user.getAllData();
+				for(Data item:data){
 					boolean update = false;
 					// Add code here to check for an update
+					HTMLParsing htmlP = new HTMLParsing(item.getURL());
+					update = htmlP.checkUpdate(item);
 					if(update){
-						Notification message = new Notification(null,null);
+						Notification message = new Notification(item.getURL(),item.getUser());
 						_list.add(message);
 					}
 				}

@@ -29,48 +29,45 @@ public class HTMLParsing {
 	 * paragraph fields. If we find a match we return the complete text and if not
 	 * then we return null.
 	 */
-	public String findElement(String enteredText) {
+	public ArrayList<String> findElement(String enteredText) {
 		Elements links = _doc.select("a");
 		Elements divs = _doc.select("div");
 		Elements listEls = _doc.select("li");
 		Elements paragraphs = _doc.select("p");
+		ArrayList<Element> _elements = new ArrayList<Element>();
 		//The most likely thing is that it will be a link that leads to some article
 		for (Element e : links) {
 			String text = e.text();
 			//Storing process
 			if (text.contains(enteredText)) {
-				Data dStore = new Data(text, _url);
+				_elements.add(e);
 			}
-			return text;
 		}
 		//divs
 		for (Element e : divs) {
 			String text = e.text();
 			//Storing process
 			if (text.contains(enteredText)) {
-				Data dStore = new Data(text, _url);
+				_elements.add(e);
 			}
-			return text;
 		}
 		//list elements
 		for (Element e : listEls) {
 			String text = e.text();
 			//Storing process
 			if (text.contains(enteredText)) {
-				Data dStore = new Data(text, _url);
+				_elements.add(e);
 			}
-			return text;
 		}
 		//paragraphs
 		for (Element e : paragraphs) {
 			String text = e.text();
 			//Storing process
 			if (text.contains(enteredText)) {
-				Data dStore = new Data(text, _url);
+				_elements.add(e);
 			}
-			return text;
 		}
-		return null;
+		return _elements;
 	}
 	/*
 	 * This element will take in all the attributes in an ArrayList, this 
@@ -81,38 +78,48 @@ public class HTMLParsing {
 	 * [2] = class
 	 * [3] = text
 	 */
-	public void checkUpdate(ArrayList<String> eAttr) {
+	public boolean checkUpdate(Data dObj) {
 		try {
-			Document doc = Jsoup.connect(eAttr.get(0)).get();
+			Document doc = Jsoup.connect(dObj.getURL()).get();
+			boolean change = true;
 			//check the id
-			if (eAttr.get(1) != null) {
-				Elements id = doc.select(eAttr.get(1));
+			if (dObj.getID() != null) {
+				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
-					if (text.contains(eAttr.get(3))) { 
+					if (text.contains(dObj.getText())) {
+						change = false;
 						//what should we return?
 					}
 				}
 			}
 			//check the class
-			else if (eAttr.get(2) != null) {
-				Elements classes = doc.select(eAttr.get(1));
+			else if (dObj.getClassObject() != null && change) {
+				Elements classes = doc.select(dObj.getID());
 				for (Element e : classes) {
 					String text = e.text();
-					if (text.contains(eAttr.get(3))) { 
-						//what should we return?
+					if (text.contains(dObj.getText())) {
+						change = false; 
+						//what should we return? 
 					}
 				}
 			}
 			//check everything
-			else {
+			else if (dObj.getClassObject() == null && dObj.getID() == null) {
 				Elements all = doc.select("*");
 				for (Element e : all) {
 					String text = e.text();
-					if (text.contains(eAttr.get(3))) { 
+					if (text.contains(dObj.getText())) { 
+						change = false;
 						//what should we return?
 					}
 				}
+			}
+			//If the element is not there we should notify the user
+			if (change) {
+				return true;
+			} else {
+				return false;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

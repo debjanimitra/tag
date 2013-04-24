@@ -33,4 +33,15 @@ public class Data implements TagData{ // might need to implement Serializable
 		return _id;
 	}
 
+	public String getUser(){
+		return _username;
+	}
+
+	public String getURL(){
+		return _url;
+	}
+
+	public String getText(){
+		return _text;
+	}
 }
