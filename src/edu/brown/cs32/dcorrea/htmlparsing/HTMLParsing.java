@@ -78,31 +78,31 @@ public class HTMLParsing {
 	 * [2] = class
 	 * [3] = text
 	 */
-	public boolean checkUpdate(Data dObj) {
+	public String checkUpdate(Data dObj) {
 		try {
 			Document doc = Jsoup.connect(dObj.getURL()).get();
-			boolean change = true;
+			String change = "true";
 			//check the id
 			if (dObj.getID() != null) {
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
 					if (text.equals(dObj.getText())) {
-						change = false;
+						change = "false";
 						//what should we return?
 					}
 				}
 			}
 			//check the class
-			else if (dObj.getClassObject() != null && change) {
+			else if (dObj.getClassObject() != null && change.equals("true")) {
 				Elements classes = doc.select(dObj.getID());
-				if (classes.) {
-					
+				if (classes.size() > 1) {
+					return "lost";
 				}
 				for (Element e : classes) {
 					String text = e.text();
 					if (text.equals(dObj.getText())) {
-						change = false; 
+						change = "false"; 
 						//what should we return? 
 					}
 				}
@@ -113,37 +113,37 @@ public class HTMLParsing {
 				for (Element e : all) {
 					String text = e.text();
 					if (text.equals(dObj.getText())) { 
-						change = false;
+						change = "false";
 						//what should we return?
 					}
 				}
-				if (change == false) {
+				if (change.equals("false")) {
 					change = this.checkForAddition(dObj);
 				}
 			}
 			//If the element is not there we should notify the user
-			if (change) {
-				return true;
+			if (change.equals("true")) {
+				return "true";
 			} else {
-				return false;
+				return "false";
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return "lost";
 	}
 	
-	public boolean checkForAddition(Data dObj) {
+	public String checkForAddition(Data dObj) {
 		Document prevDoc = dObj.getDocument();
 		Element prevBody = prevDoc.body();
 		Element currBody = _doc.body();
 		String pBText = prevBody.text();
 		String cBText = currBody.text();
 		if (pBText.length() > cBText.length()) {
-			return true;
+			return "true";
 		} else {
-			return false;
+			return "false";
 		}
 	}
 }
