@@ -18,7 +18,8 @@ import edu.brown.cs32.vgavriel.connectorOnServer.MessageContent;
  */
 public class Server extends Thread{
 	private int _portNumber;
-	private ServerSocket _serverSocket;
+	private ServerSocket _standardServerSocket;
+	private ServerSocket _pushServerSocket;
 	private ClientPool _clientPool;
 	private boolean _running;
 
@@ -29,14 +30,17 @@ public class Server extends Thread{
 	 * @param port
 	 * @throws IOException
 	 */
-	public Server(int portNumber) throws IOException {
+	public Server(int portNumber) throws IOException{
 		if (portNumber <= 1024) {
 			throw new IllegalArgumentException("Ports under 1024 are reserved!");
+		} else if (portNumber > 65535) {
+			throw new IllegalArgumentException("Ports higher than 65535 are not allowed");
 		}
 
 		_portNumber = portNumber;
 		_clientPool = new ClientPool();
-		_serverSocket = new ServerSocket(_portNumber);
+		_standardServerSocket = new ServerSocket(_portNumber);
+		_pushServerSocket = new ServerSocket(_portNumber + 1);
 	}
 
 	/**
@@ -51,10 +55,11 @@ public class Server extends Thread{
 		database.addUser(user, user.getID());
 		while(_running){
 			try {
-				Socket clientConnection = _serverSocket.accept();
+				Socket clientConnection = _standardServerSocket.accept();
+				Socket pushConnection = _pushServerSocket.accept();
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
-					ClientHandler ch = new ClientHandler(clientConnection, _clientPool);
+					ClientHandler ch = new ClientHandler(clientConnection, pushConnection, _clientPool, database);
 					ch.start();								
 				}
 			} catch (IOException e) {
@@ -73,7 +78,8 @@ public class Server extends Thread{
 	public void kill() throws IOException {
 		_running = false;
 		_clientPool.killall();
-		_serverSocket.close();
+		_standardServerSocket.close();
+		_pushServerSocket.close();
 	}
 	
 	/**
@@ -89,7 +95,7 @@ public class Server extends Thread{
 			if(_clientPool.isClientConnected(notif.getUser())){
 				ClientHandler handler = _clientPool.getClient(notif.getUser());
 				Message message = new Message(MessageContent.NOTIFICATION, notif);
-				handler.send(message);
+				handler.pushSend(message);
 			}
 			else{
 				returnList.add(notif);

@@ -44,6 +44,9 @@ public class Database{
 		}
 	}
 	
+	public synchronized boolean hasUser(String id){
+		return _dataMap.containsKey(id);
+	}
 	
 	public synchronized void addUser(User user, String id){
 		if(!_dataMap.containsKey(id)){

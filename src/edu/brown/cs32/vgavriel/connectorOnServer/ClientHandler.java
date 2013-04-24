@@ -9,34 +9,47 @@ import java.net.SocketException;
 
 
 import edu.brown.cs32.takhan.tag.Data;
+import edu.brown.cs32.takhan.tag.Database;
 import edu.brown.cs32.takhan.tag.User;
 
 public class ClientHandler extends Thread {
 	private Socket _clientSocket;
+	private Socket _pushSocket;
 	private ClientPool _clientPool;
 	private String _userID;
-	private ObjectInputStream _input;
-	private ObjectOutputStream _output;
+	private ObjectInputStream _standardInput;
+	private ObjectOutputStream _standardOutput;
+	private ObjectInputStream _pushInput;
+	private ObjectOutputStream _pushOutput;
 	private boolean _running;
+	private Database _database;
 
 	/**
 	 * Constructs a {@link ClientHandler} on the given client with the given pool.
+	 * @param database 
 	 * 
 	 * @param pool a group of other clients to chat with
 	 * @param client the client to handle
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if pool or client is null
 	 */
-	public ClientHandler(Socket clientSocket, ClientPool clientPool) throws IOException {
+	public ClientHandler(Socket clientSocket, Socket pushSocket, ClientPool clientPool, Database database) throws IOException {
 		if (clientSocket == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
 		_clientSocket = clientSocket;
+		_pushSocket = pushSocket;
 		_clientPool = clientPool;
 
-		_output = new ObjectOutputStream(_clientSocket.getOutputStream());	
-		_output.flush();
-		_input = new ObjectInputStream(_clientSocket.getInputStream());		
+		_standardOutput = new ObjectOutputStream(_clientSocket.getOutputStream());	
+		_standardOutput.flush();
+		_standardInput = new ObjectInputStream(_clientSocket.getInputStream());		
+		
+		_pushOutput = new ObjectOutputStream(_pushSocket.getOutputStream());	
+		_pushOutput.flush();
+		_pushInput = new ObjectInputStream(_pushSocket.getInputStream());		
+		
+		_database = database;
 		_running = true;
 	}
 
@@ -47,18 +60,37 @@ public class ClientHandler extends Thread {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public String handShake() throws ClassNotFoundException, IOException{
-		Message message = (Message) _input.readObject();
+	public boolean handShake() throws ClassNotFoundException, IOException{
+		Message message = (Message) _standardInput.readObject();
 		String userID;
+		// normal login:
 		if(message != null && message.getContent() == MessageContent.USERID && (userID = (String) message.getObject()) != null){
 			_userID = userID;
-			_clientPool.add(_userID, this);
-			return userID;
-		} else {
-			System.err.println("The first message HAS to contain ONLY the user credentials");
-			kill();
-			return null;
+			if(_database.hasUser(_userID)){
+				_clientPool.add(_userID, this);
+				this.normalSend(new Message(MessageContent.DONE, null));
+			} else {
+				this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_UNKNOWNUSER, null));
+				return false;
+			}			
 		}
+		// registration:
+		else if(message != null && message.getContent() == MessageContent.NEWUSERID && (userID = (String) message.getObject()) != null){
+			_userID = userID;
+			if(!_database.hasUser(_userID)){
+				_database.addUser(new User(_userID), _userID);
+				_clientPool.add(_userID, this);
+				this.normalSend(new Message(MessageContent.DONE, null));
+			} else {
+				this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_NONUNIQUEUSER, null));
+				return false;
+			}			
+		} else { // not a valid handshake message!
+			System.err.println("The first message HAS to contain ONLY the user credentials");			
+			this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_NOUSER, null));
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -68,18 +100,12 @@ public class ClientHandler extends Thread {
 	public void run() {
 		try {
 			// HANDSHAKE:
-			String userID = handShake();
-			if(userID != null){
-				_clientPool.add(userID, this);
-			} else {
-				System.out.println("The client failed the handshake (did not provide user name) and got disconnected!");
-				return;
-			}		
+			while(!handShake()){}		
 			// POST HANDSHAKE:
-			Message message = (Message) _input.readObject();
+			Message message = (Message) _standardInput.readObject();
 			while(message != null){
-				send(processMessage(message));
-				message = (Message) _input.readObject();
+				normalSend(processMessage(message));
+				message = (Message) _standardInput.readObject();
 			}			
 
 		} catch(EOFException | SocketException e){
@@ -138,15 +164,25 @@ public class ClientHandler extends Thread {
 	 * 
 	 * @param message text to send
 	 */
-	public void send(Message message) {
+	public void normalSend(Message message) {
 		try {
-			_output.writeObject(message);
-			_output.flush();
+			_standardOutput.writeObject(message);
+			_standardOutput.flush();
 		} catch (IOException e) {
 			System.out.println("A client disconnected!");
 			kill();
 		}
 
+	}
+	
+	public void pushSend(Message message) {
+		try {
+			_pushOutput.writeObject(message);
+			_pushOutput.flush();
+		} catch (IOException e) {
+			System.out.println("A client disconnected!");
+			kill();
+		}
 	}
 
 	/**
@@ -159,8 +195,10 @@ public class ClientHandler extends Thread {
 			_running = false;
 			_clientPool.remove(_userID);			
 			_clientSocket.close();
-			_input.close();
-			_output.close();			
+			_standardInput.close();
+			_standardOutput.close();		
+			_pushInput.close();
+			_pushOutput.close();
 		} catch (IOException e) {
 			//there is really nothing we can do here.
 		}

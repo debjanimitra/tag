@@ -1,5 +1,7 @@
 package edu.brown.cs32.vgavriel.connectorOnServer;
 
+import java.io.Serializable;
+
 /**
  * enum for specifying the content of a message
  * USER: instance of User class
@@ -9,6 +11,6 @@ package edu.brown.cs32.vgavriel.connectorOnServer;
  * @author vgavriel
  *
  */
-public enum MessageContent {
-	USER, DATA, NOTIFICATION, USERID, DONE, NEWUSERID
+public enum MessageContent implements Serializable {
+	USER, DATA, NOTIFICATION, USERID, DONE, NEWUSERID, ERRORHANDSHAKE_UNKNOWNUSER, ERRORHANDSHAKE_NONUNIQUEUSER, ERRORHANDSHAKE_NOUSER
 }
