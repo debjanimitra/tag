@@ -12,13 +12,14 @@ public class Data implements TagData{ // might need to implement Serializable
 	private final String _username;
 	private boolean _permanent; 
 	private Document _doc;
+	private String _classname;
 	
-	
-	public Data(String text, String url, String id, String username, Document doc, boolean perm){
+	public Data(String text, String url, String id, String classname, String username, Document doc, boolean perm){
 		_text = text;
 		_url = url;
 		_username = username;
 		_id = id;
+		_classname = classname;
 		_permanent = perm;
 		_doc = doc;
 	}
