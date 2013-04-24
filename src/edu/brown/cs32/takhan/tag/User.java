@@ -10,7 +10,7 @@ public class User { // might need to implement Serializable
 	
 	private String _userID;
 	private String _password;
-	private ListMultimap<String,TagData> _dataMap;
+	private ListMultimap<String,Data> _dataMap;
 	
 	
 	public User(String id){
@@ -62,7 +62,7 @@ public class User { // might need to implement Serializable
 	 * @param url
 	 * @param data
 	 */
-	public void addData(String url, TagData data){
+	public void addData(String url, Data data){
 		if(!_dataMap.containsEntry(url, data)){
 			_dataMap.put(url, data);
 		}
@@ -72,7 +72,7 @@ public class User { // might need to implement Serializable
 	 * Returns all the data items that are currently stored. 
 	 * @return
 	 */
-	public Collection<TagData> getAllData(){
+	public Collection<Data> getAllData(){
 		return _dataMap.values();
 	}
 

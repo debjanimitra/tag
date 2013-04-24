@@ -29,7 +29,7 @@ public class HTMLParsing {
 	 * paragraph fields. If we find a match we return the complete text and if not
 	 * then we return null.
 	 */
-	public ArrayList<String> findElement(String enteredText) {
+	public ArrayList<Element> findElement(String enteredText) {
 		Elements links = _doc.select("a");
 		Elements divs = _doc.select("div");
 		Elements listEls = _doc.select("li");
@@ -125,6 +125,7 @@ public class HTMLParsing {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 		
 	}
 }
