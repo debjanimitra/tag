@@ -48,12 +48,7 @@ private HashMap<String, ClientHandler> _clientPool;
 	 * @return
 	 */
 	public synchronized boolean isClientConnected(String id){
-		if(_clientPool.containsKey(id)){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return _clientPool.containsKey(id);
 	}
 	
 	/**
