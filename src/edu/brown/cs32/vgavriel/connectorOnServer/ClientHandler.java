@@ -67,6 +67,10 @@ public class ClientHandler extends Thread {
 		if(message != null && message.getContent() == MessageContent.USERID && (userID = (String) message.getObject()) != null){
 			_userID = userID;
 			if(_database.hasUser(_userID)){
+				if(_clientPool.isClientConnected(_userID)){
+					this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_MULTIPLELOGINS, null));
+					return false;
+				}
 				_clientPool.add(_userID, this);
 				this.normalSend(new Message(MessageContent.DONE, null));
 			} else {
