@@ -1,13 +1,15 @@
 package edu.brown.cs32.takhan.tag;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-public class User { // might need to implement Serializable
+public class User implements Serializable{ // might need to implement Serializable
 	
+	private static final long serialVersionUID = 1L;
 	private String _userID;
 	private String _password;
 	private ListMultimap<String,Data> _dataMap;

@@ -13,10 +13,11 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Database{
 	
-	private HashMap<String,User> _dataMap;
+	private ConcurrentHashMap<String,User> _dataMap;
 	private final String fileName = "data.ser";
 	private ObjectOutput _output;
 	
@@ -32,10 +33,10 @@ public class Database{
 			inputFile = new FileInputStream(fileName);
 			InputStream buffer = new BufferedInputStream(inputFile);
 			ObjectInput input = new ObjectInputStream(buffer);
-			_dataMap = (HashMap<String,User>) input.readObject();
+			_dataMap = (ConcurrentHashMap<String,User>) input.readObject();
 			}
 			catch(IOException | ClassNotFoundException e){
-				_dataMap = new HashMap<>();
+				_dataMap = new ConcurrentHashMap<>();
 			}
 			
 		}

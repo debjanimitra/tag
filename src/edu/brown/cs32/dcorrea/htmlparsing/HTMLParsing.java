@@ -154,10 +154,8 @@ public class HTMLParsing {
 	}
 	
 	public String checkForAddition(Data dObj) {
-		Document prevDoc = dObj.getDocument();
-		Element prevBody = prevDoc.body();
 		Element currBody = _doc.body();
-		String pBText = prevBody.text();
+		String pBText = dObj.getDocBody();
 		String cBText = currBody.text();
 		if (pBText.length() > cBText.length()) {
 			return "true";

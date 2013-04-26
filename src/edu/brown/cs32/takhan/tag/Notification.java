@@ -1,13 +1,16 @@
 package edu.brown.cs32.takhan.tag;
 
+import java.io.Serializable;
+
 /**
  * This class represents a notification object in
  * the program
  * @author takhan
  *
  */
-public class Notification { //might need to implement Serializable
+public class Notification implements Serializable{ //might need to implement Serializable
 	
+	private static final long serialVersionUID = 1L;
 	private String _url;
 	private String _user;
 	private boolean _lost;

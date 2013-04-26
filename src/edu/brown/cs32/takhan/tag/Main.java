@@ -19,6 +19,7 @@ public class Main {
 			server.start();
 			System.out.println("Server started");
 		} catch (IOException e){
+			e.printStackTrace();
 			System.err.println("could not start server!");
 			System.exit(0);
 		}

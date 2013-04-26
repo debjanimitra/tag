@@ -1,35 +1,37 @@
 package edu.brown.cs32.takhan.tag;
+import java.io.Serializable;
+
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
-public class Data implements TagData{ // might need to implement Serializable
+public class Data implements TagData, Serializable{ // might need to implement Serializable
 
+	private static final long serialVersionUID = 1L;
 	private String _url;
 	private String _id;
-	private String _class;
 	private String _text;
 	private final String _username;
 	private boolean _permanent; 
-	private Document _doc;
+	private String _docBody;
 	private String _classname;
 	
-	public Data(String text, String url, String id, String classname, String username, Document doc, boolean perm){
+	public Data(String text, String url, String id, String classname, String username, String docBody, boolean perm){
 		_text = text;
 		_url = url;
 		_username = username;
 		_id = id;
 		_classname = classname;
 		_permanent = perm;
-		_doc = doc;
+		_docBody = docBody;
 	}
 	
-	public Document getDocument() {
-		return _doc;
+	public String getDocBody() {
+		return _docBody;
 	}
 	
 	public void setClass(String objClass){
-		_class = objClass;
+		_classname = objClass;
 	}
 	
 	public boolean getPerm(){
@@ -37,7 +39,7 @@ public class Data implements TagData{ // might need to implement Serializable
 	}
 	
 	public String getClassObject(){
-		return _class;
+		return _classname;
 	}
 	
 	public void setID(String id){

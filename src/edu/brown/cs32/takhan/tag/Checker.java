@@ -56,6 +56,12 @@ public class Checker extends Thread {
 						//_list.add(message);
 					//}
 				}
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if(!_list.isEmpty()){
 				_list = _server.pushNotifications(_list);
