@@ -2,6 +2,10 @@ package edu.brown.cs32.dcorrea.htmlparsing;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jsoup.*;
 import org.jsoup.nodes.*;
@@ -30,43 +34,54 @@ public class HTMLParsing {
 	 * then we return null.
 	 */
 	public ArrayList<Element> findElement(String enteredText) {
+		enteredText = enteredText.toLowerCase();
 		Elements links = _doc.select("a");
 		Elements divs = _doc.select("div");
 		Elements listEls = _doc.select("li");
 		Elements paragraphs = _doc.select("p");
-		ArrayList<Element> _elements = new ArrayList<Element>();
+		HashMap<String, Element> hm = new HashMap<String, Element>();
+		ArrayList<Element> _elements;
 		//The most likely thing is that it will be a link that leads to some article
 		for (Element e : links) {
-			String text = e.text();
+			String text = e.text().toLowerCase();
 			//Storing process
 			if (text.contains(enteredText)) {
-				_elements.add(e);
+				if (hm.get(text)==null){
+					hm.put(text, e);
+				}
 			}
 		}
 		//divs
 		for (Element e : divs) {
-			String text = e.text();
+			String text = e.text().toLowerCase();
 			//Storing process
 			if (text.contains(enteredText)) {
-				_elements.add(e);
+				if (hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
+					hm.put(text, e);
+				}
 			}
 		}
 		//list elements
 		for (Element e : listEls) {
-			String text = e.text();
+			String text = e.text().toLowerCase();
 			//Storing process
 			if (text.contains(enteredText)) {
-				_elements.add(e);
+				if (hm.get(text)==null || hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
+					hm.put(text, e);
+				}
 			}
 		}
 		//paragraphs
 		for (Element e : paragraphs) {
-			String text = e.text();
+			String text = e.text().toLowerCase();
 			//Storing process
 			if (text.contains(enteredText)) {
-				_elements.add(e);
+				if (hm.get(text)==null || hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
+					hm.put(text, e);
+				}
 			}
 		}
+		_elements = new ArrayList<Element>(hm.values());
 		return _elements;
 	}
 	/*
@@ -134,6 +149,10 @@ public class HTMLParsing {
 		return "lost";
 	}
 	
+	public Document getDocument(){
+		return _doc;
+	}
+	
 	public String checkForAddition(Data dObj) {
 		Document prevDoc = dObj.getDocument();
 		Element prevBody = prevDoc.body();
@@ -144,6 +163,34 @@ public class HTMLParsing {
 			return "true";
 		} else {
 			return "false";
+		}
+	}
+	
+	public ElementInfo canBePermanent(Element el) {
+		ElementInfo elInfo = new ElementInfo();
+		if (el.id().length() != 0) {
+			elInfo.setID("#"+el.id());
+			elInfo.setPerm(true);
+			return elInfo;
+		}
+		Set<String> elClass = el.classNames();
+		for (String c : elClass) {
+			Elements elms = _doc.select("."+c);
+			if (elms.size() == 1) {
+				elInfo.setElementClass("."+c);
+				elInfo.setPerm(true);
+				break;
+			}
+		}
+		return elInfo;
+	}
+	
+	private class CustomComparator implements Comparator<Element> {
+
+		@Override
+		public int compare(Element o1, Element o2) {
+			// TODO Auto-generated method stub
+			return o1.text().compareTo(o2.text());
 		}
 	}
 }

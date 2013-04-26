@@ -59,4 +59,8 @@ public class Data implements TagData{ // might need to implement Serializable
 	public String getText(){
 		return _text;
 	}
+	
+	public void setPerm(boolean perm){
+		_permanent=perm;
+	}
 }
