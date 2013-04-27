@@ -41,6 +41,7 @@ public class Checker extends Thread {
 							_list.add(message);
 							if(!item.getPerm()){
 								user.removeData(item);
+								_database.updateFile();
 							}
 							break;
 						case "false":
@@ -49,6 +50,7 @@ public class Checker extends Thread {
 							Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
 							_list.add(lostMessage);
 							user.removeData(item);
+							_database.updateFile();
 							break;
 					}
 					//if(update){

@@ -34,8 +34,10 @@ public class Database{
 			InputStream buffer = new BufferedInputStream(inputFile);
 			ObjectInput input = new ObjectInputStream(buffer);
 			_dataMap = (ConcurrentHashMap<String,User>) input.readObject();
+			
 			}
 			catch(IOException | ClassNotFoundException e){
+				System.out.println("file doesn't exist");
 				_dataMap = new ConcurrentHashMap<>();
 			}
 			

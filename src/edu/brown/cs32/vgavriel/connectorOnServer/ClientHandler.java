@@ -141,6 +141,7 @@ public class ClientHandler extends Thread {
 			Data data = (Data) message.getObject();
 			User user = _database.getUser(data.getUser());
 			if(user.addData(data.getURL(), data)){
+				_database.updateFile();
 				return new Message(MessageContent.DONE, null);
 			} else {
 				return new Message(MessageContent.ERROR_RECEIVE_TAGALREADYEXISTS, null);
