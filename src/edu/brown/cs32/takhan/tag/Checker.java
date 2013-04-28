@@ -89,6 +89,7 @@ public class Checker extends Thread {
 				person.removeData(tag);
 				System.out.println("hi");
 			}
+			_database.updateFile();
 			if(!_list.isEmpty()){
 				_list = _server.pushNotifications(_list);
 			}

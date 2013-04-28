@@ -165,6 +165,7 @@ public class ClientHandler extends Thread {
 		case UPDATE_WEBTAGS:
 			if(message.getObject() != null){
 				_database.getUser(_userID).setDataMap((ListMultimap<String,Data>) message.getObject());
+				_database.updateFile();
 				return new Message(MessageContent.DONE_UPDATEWEBTAGS, (Object) _database.getUser(_userID).getDataMap());
 			} else {
 				return new Message(MessageContent.ERROR_UPDATINGWEBTAGS, null);
