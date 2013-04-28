@@ -108,5 +108,13 @@ public class User implements Serializable{ // might need to implement Serializab
 	public synchronized Collection<Data> getAllData(){
 		return _dataMap.values();
 	}
+	
+	public synchronized ListMultimap<String, Data> getDataMap(){
+		return _dataMap;
+	}
+	
+	public synchronized void setDataMap(ListMultimap<String, Data> listMultimap){
+		_dataMap = listMultimap;
+	}
 
 }

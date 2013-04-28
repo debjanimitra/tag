@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.google.common.collect.ListMultimap;
+
 
 import edu.brown.cs32.takhan.tag.Data;
 import edu.brown.cs32.takhan.tag.Database;
@@ -130,6 +132,7 @@ public class ClientHandler extends Thread {
 	 * @param message
 	 * @return the message to be returned to the clientside
 	 */
+	@SuppressWarnings("unchecked")
 	private Message processMessage(Message message){
 		
 		if(message == null){
@@ -150,6 +153,15 @@ public class ClientHandler extends Thread {
 			 * TODO: message has an instance of Data, so process it and return a confirmation
 			 */
 			// break; never reached
+		case GET_WEBTAGS:
+			return new Message(MessageContent.DONE, (Object) _database.getUser(_userID).getDataMap());
+		case UPDATE_WEBTAGS:
+			if(message.getObject() != null){
+				_database.getUser(_userID).setDataMap((ListMultimap<String,Data>) message.getObject());
+				return new Message(MessageContent.DONE, (Object) _database.getUser(_userID).getDataMap());
+			} else {
+				return new Message(MessageContent.ERROR_UPDATINGWEBTAGS, null);
+			}
 		default:
 			return new Message(MessageContent.ERROR_RECEIVE_INVALIDDATA, null);
 			/**
