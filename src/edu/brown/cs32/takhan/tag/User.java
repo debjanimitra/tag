@@ -1,8 +1,10 @@
 package edu.brown.cs32.takhan.tag;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -64,12 +66,12 @@ public class User implements Serializable{ // might need to implement Serializab
 	 * @param url
 	 * @param data
 	 */
-	public boolean addData(String url, Data data){
+	public synchronized boolean addData(String url, Data data){
 		boolean contains = false;
 		if(_dataMap.containsKey(url)){
 			Collection<Data> dataCollection = _dataMap.get(url);
 			for(Data item:dataCollection){
-				if(item.getText().equals(data.getText())&&item.getID().equals(data.getID())&item.getClassObject().equals(data.getClassObject())){
+				if(item.getText().equals(data.getText()) && item.getID().equals(data.getID()) && item.getClassObject().equals(data.getClassObject())){
 					contains = true;
 					break;
 				}
@@ -86,9 +88,13 @@ public class User implements Serializable{ // might need to implement Serializab
 	 * Method to remove a specific data object from the hashmap 
 	 * @param toRemove
 	 */
-	public void removeData(Data toRemove){
+	public synchronized void removeData(Data toRemove){
 		Collection<Data> dataList = _dataMap.get(toRemove.getURL());
-		for(Data data:dataList){
+		List<Data> dataL = new ArrayList<>();
+		for(Data item:dataList){
+			dataL.add(item);
+		}
+		for(Data data:dataL){
 			if(data.getID().equals(toRemove.getID())&&data.getText().equals(toRemove.getText())&&data.getClassObject().equals(toRemove.getClassObject())){
 				_dataMap.remove(data.getURL(),data);
 			}
@@ -99,7 +105,7 @@ public class User implements Serializable{ // might need to implement Serializab
 	 * Returns all the data items that are currently stored. 
 	 * @return
 	 */
-	public Collection<Data> getAllData(){
+	public synchronized Collection<Data> getAllData(){
 		return _dataMap.values();
 	}
 

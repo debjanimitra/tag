@@ -1,5 +1,6 @@
 package edu.brown.cs32.takhan.tag;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,45 +27,70 @@ public class Checker extends Thread {
 	 */
 	public void run(){
 		while(true){
-			Collection<User> users = _database.getAllUsers();
+			Collection<User> userC = _database.getAllUsers();
+			List<User> users = new ArrayList<>();
+			for(User u:userC){
+				users.add(u);
+			}
+			List<Data> dataList = new ArrayList<>();
 			for(User user:users){
-				Collection<Data> data = user.getAllData();
+				Collection<Data> dataC = user.getAllData();
+				List<Data> data = new ArrayList<>();
+				for(Data d:dataC) {
+					data.add(d);
+				}
 				for(Data item:data){
 					//boolean update = false;
 					String update = "";
 					// Add code here to check for an update
-					HTMLParsing htmlP = new HTMLParsing(item.getURL());
-					update = htmlP.checkUpdate(item);
-					switch(update){
-						case "true":
-							Notification message = new Notification(item.getURL(),item.getUser(), false);
-							_list.add(message);
-							if(!item.getPerm()){
-								user.removeData(item);
-							}
-							break;
-						case "false":
-							break;
-						case "lost":
-							Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
-							_list.add(lostMessage);
-							user.removeData(item);
-							break;
+					HTMLParsing htmlP;
+					try {
+						htmlP = new HTMLParsing(item.getURL());
+						update = htmlP.checkUpdate(item);
+						switch(update){
+							case "true":
+								Notification message = new Notification(item.getURL(),item.getUser(), false);
+								_list.add(message);
+								if(!item.getPerm()){
+									dataList.add(item);
+									//user.removeData(item);
+								}
+								break;
+							case "false":
+								break;
+							case "lost":
+								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
+								_list.add(lostMessage);
+								dataList.add(item);
+								//user.removeData(item);
+								break;
+						}
+						//if(update){
+							//Notification message = new Notification(item.getURL(),item.getUser());
+							//_list.add(message);
+						//}
+					} catch (UnknownHostException e) {
+						// this should never happen except the website goes off
 					}
-					//if(update){
-						//Notification message = new Notification(item.getURL(),item.getUser());
-						//_list.add(message);
-					//}
+					
 				}
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+			}
+			for(Data tag:dataList){
+				String user = tag.getUser();
+				User person = _database.getUser(user);
+				person.removeData(tag);
+				System.out.println("hi");
 			}
 			if(!_list.isEmpty()){
 				_list = _server.pushNotifications(_list);
+			}
+			
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

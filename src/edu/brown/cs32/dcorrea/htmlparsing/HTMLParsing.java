@@ -1,6 +1,7 @@
 package edu.brown.cs32.dcorrea.htmlparsing;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class HTMLParsing {
 	private Document _doc;
 	private String _url;
 	
-	public HTMLParsing(String url) {
+	public HTMLParsing(String url) throws UnknownHostException{
 		try {
 			_url = url;
 			_doc = Jsoup.connect(url).get();
@@ -98,7 +99,7 @@ public class HTMLParsing {
 			Document doc = Jsoup.connect(dObj.getURL()).get();
 			String change = "true";
 			//check the id
-			if (dObj.getID() != null) {
+			if (dObj.getID().length() != 0) {
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
@@ -109,7 +110,7 @@ public class HTMLParsing {
 				}
 			}
 			//check the class
-			else if (dObj.getClassObject() != null && change.equals("true")) {
+			else if (dObj.getClassObject().length() != 0 && change.equals("true")) {
 				Elements classes = doc.select(dObj.getID());
 				if (classes.size() > 1) {
 					return "lost";
@@ -123,7 +124,7 @@ public class HTMLParsing {
 				}
 			}
 			//check everything
-			else if (dObj.getClassObject() == null && dObj.getID() == null) {
+			else if (dObj.getClassObject().length() == 0 && dObj.getID().length() == 0) {
 				Elements all = doc.select("*");
 				for (Element e : all) {
 					String text = e.text();
