@@ -37,6 +37,7 @@ public class Database{
 			
 			}
 			catch(IOException | ClassNotFoundException e){
+				e.printStackTrace();
 				System.out.println("file doesn't exist");
 				_dataMap = new ConcurrentHashMap<>();
 			}
@@ -68,6 +69,7 @@ public class Database{
 	
 	public synchronized void updateFile(){
 		try {
+			System.out.println("File updating");
 			_output.writeObject(_dataMap);
 		} catch (IOException e) {
 	

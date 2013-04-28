@@ -190,6 +190,7 @@ public class ClientHandler extends Thread {
 		try {
 			_standardOutput.writeObject(message);
 			_standardOutput.flush();
+			_standardOutput.reset();
 		} catch (IOException e) {
 			System.out.println("A client disconnected!");
 			kill();
@@ -201,6 +202,7 @@ public class ClientHandler extends Thread {
 		try {
 			_pushOutput.writeObject(message);
 			_pushOutput.flush();
+			_pushOutput.reset();
 		} catch (IOException e) {
 			System.out.println("A client disconnected!");
 			kill();
