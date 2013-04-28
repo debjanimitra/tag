@@ -154,11 +154,11 @@ public class ClientHandler extends Thread {
 			 */
 			// break; never reached
 		case GET_WEBTAGS:
-			return new Message(MessageContent.DONE, (Object) _database.getUser(_userID).getDataMap());
+			return new Message(MessageContent.DONE_GETWEBTAGS, (Object) _database.getUser(_userID).getDataMap());
 		case UPDATE_WEBTAGS:
 			if(message.getObject() != null){
 				_database.getUser(_userID).setDataMap((ListMultimap<String,Data>) message.getObject());
-				return new Message(MessageContent.DONE, (Object) _database.getUser(_userID).getDataMap());
+				return new Message(MessageContent.DONE_UPDATEWEBTAGS, (Object) _database.getUser(_userID).getDataMap());
 			} else {
 				return new Message(MessageContent.ERROR_UPDATINGWEBTAGS, null);
 			}
