@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 
@@ -46,11 +47,11 @@ public class ClientHandler extends Thread {
 		_standardOutput = new ObjectOutputStream(_clientSocket.getOutputStream());	
 		_standardOutput.flush();
 		_standardInput = new ObjectInputStream(_clientSocket.getInputStream());		
-		
+
 		_pushOutput = new ObjectOutputStream(_pushSocket.getOutputStream());	
 		_pushOutput.flush();
 		_pushInput = new ObjectInputStream(_pushSocket.getInputStream());		
-		
+
 		_database = database;
 		_running = true;
 	}
@@ -110,7 +111,12 @@ public class ClientHandler extends Thread {
 			// POST HANDSHAKE:
 			Message message = (Message) _standardInput.readObject();
 			while(message != null){
-				normalSend(processMessage(message));
+				Message toSend = processMessage(message);
+				if(toSend.getContent() == MessageContent.DONE_GETWEBTAGS){
+					ArrayListMultimap<String, Data> d = (ArrayListMultimap<String, Data>) toSend.getObject();
+					System.out.println("about to send size: " + d.size());
+				}
+				normalSend(toSend);
 				message = (Message) _standardInput.readObject();
 			}			
 
@@ -134,7 +140,7 @@ public class ClientHandler extends Thread {
 	 */
 	@SuppressWarnings("unchecked")
 	private Message processMessage(Message message){
-		
+
 		if(message == null){
 			return null;
 		}
@@ -144,6 +150,7 @@ public class ClientHandler extends Thread {
 			Data data = (Data) message.getObject();
 			User user = _database.getUser(data.getUser());
 			if(user.addData(data.getURL(), data)){
+				System.out.println("data added!");
 				_database.updateFile();
 				return new Message(MessageContent.DONE, null);
 			} else {
@@ -189,7 +196,7 @@ public class ClientHandler extends Thread {
 		}
 
 	}
-	
+
 	public void pushSend(Message message) {
 		try {
 			_pushOutput.writeObject(message);

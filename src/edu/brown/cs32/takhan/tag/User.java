@@ -110,6 +110,8 @@ public class User implements Serializable{ // might need to implement Serializab
 	}
 	
 	public synchronized ListMultimap<String, Data> getDataMap(){
+		System.out.println("RETURNING DATAMAPPPP");
+		System.out.println("_dataMap " + _dataMap.size());
 		return _dataMap;
 	}
 	
