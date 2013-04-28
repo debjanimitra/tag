@@ -43,6 +43,7 @@ public class Checker extends Thread {
 					//boolean update = false;
 					String update = "";
 					// Add code here to check for an update
+
 					HTMLParsing htmlP;
 					try {
 						htmlP = new HTMLParsing(item.getURL());
@@ -53,6 +54,7 @@ public class Checker extends Thread {
 								_list.add(message);
 								if(!item.getPerm()){
 									dataList.add(item);
+									_database.updateFile();
 									//user.removeData(item);
 								}
 								break;
@@ -62,6 +64,7 @@ public class Checker extends Thread {
 								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
 								_list.add(lostMessage);
 								dataList.add(item);
+								_database.updateFile();
 								//user.removeData(item);
 								break;
 						}
@@ -71,6 +74,7 @@ public class Checker extends Thread {
 						//}
 					} catch (UnknownHostException e) {
 						// this should never happen except the website goes off
+
 					}
 					
 				}
