@@ -16,8 +16,9 @@ public class Data implements TagData, Serializable{ // might need to implement S
 	private String _docBody;
 	private String _classname;
 	private String _title;
+	private boolean _canBePermanent;
 	
-	public Data(String text, String url, String id, String classname, String username, String docBody, String title, boolean perm){
+	public Data(String text, String url, String id, String classname, String username, String docBody, String title, boolean perm, boolean canBePermanent){
 		_text = text;
 		_url = url;
 		_username = username;
@@ -26,6 +27,7 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_permanent = perm;
 		_docBody = docBody;
 		_title = title;
+		_canBePermanent=canBePermanent;
 	}
 	
 	public String getDocBody() {
@@ -76,7 +78,17 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_title = t;
 	}
 	
+
 	public void setText(String text){
 		_text = text;
 	}
+
+	public void setCanBePermanent(boolean cbp){
+		_canBePermanent=cbp;
+	}
+	
+	public boolean getCanBePermanent(){
+		return _canBePermanent;
+	}
+	
 }
