@@ -78,6 +78,11 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_title = t;
 	}
 	
+
+	public void setText(String text){
+		_text = text;
+	}
+
 	public void setCanBePermanent(boolean cbp){
 		_canBePermanent=cbp;
 	}

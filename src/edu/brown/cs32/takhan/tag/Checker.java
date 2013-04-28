@@ -4,6 +4,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.jsoup.HttpStatusException;
+
 import edu.brown.cs32.dcorrea.htmlparsing.*;
 
 public class Checker extends Thread {
@@ -72,7 +75,7 @@ public class Checker extends Thread {
 							//Notification message = new Notification(item.getURL(),item.getUser());
 							//_list.add(message);
 						//}
-					} catch (UnknownHostException e) {
+					} catch (UnknownHostException | HttpStatusException e) {
 						// this should never happen except the website goes off
 
 					}
@@ -91,7 +94,7 @@ public class Checker extends Thread {
 			}
 			
 			try {
-				Thread.sleep(200);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

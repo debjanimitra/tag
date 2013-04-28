@@ -90,11 +90,14 @@ public class Server extends Thread{
 	 * @return 
 	 */
 	public List<Notification> pushNotifications(List<Notification> list){
+		
+		System.out.println("yaay");
+		
 		List<Notification> returnList = new ArrayList<>();
 		for(Notification notif:list){
 			if(_clientPool.isClientConnected(notif.getUser())){
 				ClientHandler handler = _clientPool.getClient(notif.getUser());
-				Message message = new Message(MessageContent.NOTIFICATION, notif);
+				Message message = new Message(MessageContent.NOTIFICATION, (Object) notif);
 				handler.pushSend(message);
 			}
 			else{
