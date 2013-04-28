@@ -75,4 +75,8 @@ public class Data implements TagData, Serializable{ // might need to implement S
 	public void setTitle(String t){
 		_title = t;
 	}
+	
+	public void setText(String text){
+		_text = text;
+	}
 }

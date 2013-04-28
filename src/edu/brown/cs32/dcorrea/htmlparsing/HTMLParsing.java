@@ -17,7 +17,7 @@ public class HTMLParsing {
 	private Document _doc;
 	private String _url;
 	
-	public HTMLParsing(String url) throws UnknownHostException{
+	public HTMLParsing(String url) throws UnknownHostException, HttpStatusException {
 		try {
 			_url = url;
 			_doc = Jsoup.connect(url).get();
@@ -97,14 +97,18 @@ public class HTMLParsing {
 	public String checkUpdate(Data dObj) {
 		try {
 			Document doc = Jsoup.connect(dObj.getURL()).get();
-			String change = "true";
+			String change = "false";
 			//check the id
 			if (dObj.getID().length() != 0) {
+				System.out.println(dObj.getID());
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
-					if (text.equals(dObj.getText())) {
-						change = "false";
+					if (!text.equals(dObj.getText())) {
+						change = "true";
+						if (dObj.getPerm()) {
+							dObj.setText(text);
+						}
 						//what should we return?
 					}
 				}
@@ -117,8 +121,11 @@ public class HTMLParsing {
 				}
 				for (Element e : classes) {
 					String text = e.text();
-					if (text.equals(dObj.getText())) {
-						change = "false"; 
+					if (!text.equals(dObj.getText())) {
+						change = "true"; 
+						if (dObj.getPerm()) {
+							dObj.setText(text);
+						}
 						//what should we return? 
 					}
 				}
@@ -126,23 +133,23 @@ public class HTMLParsing {
 			//check everything
 			else if (dObj.getClassObject().length() == 0 && dObj.getID().length() == 0) {
 				Elements all = doc.select("*");
+				boolean noMatch = false;
 				for (Element e : all) {
 					String text = e.text();
 					if (text.equals(dObj.getText())) { 
-						change = "false";
+						noMatch = true;
 						//what should we return?
 					}
 				}
-				if (change.equals("false")) {
+				if (!noMatch) {
+					change = "true";
+				}
+				if (!change.equals("true")) {
 					change = this.checkForAddition(dObj);
 				}
 			}
 			//If the element is not there we should notify the user
-			if (change.equals("true")) {
-				return "true";
-			} else {
-				return "false";
-			}
+			return change;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,12 +176,18 @@ public class HTMLParsing {
 		ElementInfo elInfo = new ElementInfo();
 		if (el.id().length() != 0) {
 			elInfo.setID("#"+el.id());
+			System.out.println("#"+el.id());
 			elInfo.setPerm(true);
 			return elInfo;
 		}
 		Set<String> elClass = el.classNames();
 		for (String c : elClass) {
+			if (c.length() == 0) {
+				break;
+			}
+			System.out.println("."+c);
 			Elements elms = _doc.select("."+c);
+			System.out.println("."+c);
 			if (elms.size() == 1) {
 				elInfo.setElementClass("."+c);
 				elInfo.setPerm(true);
