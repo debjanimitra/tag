@@ -15,6 +15,7 @@ public class Notification implements Serializable{ //might need to implement Ser
 	private String _user;
 	private boolean _lost;
 	private String _id;
+	private String _title;
 	
 	/**
 	 * Initializes a new notification that stores strings
@@ -23,12 +24,23 @@ public class Notification implements Serializable{ //might need to implement Ser
 	 * @param url
 	 * @param user
 	 */
-	public Notification(String url, String user, boolean lost, String id){
+	public Notification(String url, String user, boolean lost, String id, String title){
 		_lost = lost;
 		_user = user;
 		_url = url;
 		_id = id;
+		_title=title;
 	}
+	
+	
+	public String getTitle(){
+		return _title;
+	}
+	
+	public void setTitle(String title){
+		_title=title;
+	}
+	
 	
 	/**
 	 * Returns a user's ID;

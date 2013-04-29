@@ -54,7 +54,7 @@ public class Checker extends Thread {
 						update = htmlP.checkUpdate(item);
 						switch(update){
 							case "true":
-								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID());
+								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID(), item.getTitle());
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(message);
@@ -82,7 +82,7 @@ public class Checker extends Thread {
 							case "false":
 								break;
 							case "lost":
-								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID());
+								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID(), item.getTitle());
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(lostMessage);
