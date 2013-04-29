@@ -199,7 +199,7 @@ public class ClientHandler extends Thread {
 				}
 			}
 			else {
-				return new Message(MessageContent.ERROR_GETNOTIFICATIONS_UNKNOWNUSER, null);
+				return new Message(MessageContent.ERROR_DELETENOTIFICATIONS_UNKNOWNUSER, null);
 			}
 			//break;
 		default:

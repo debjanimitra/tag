@@ -35,7 +35,9 @@ public class Database{
 				}
 				catch(IOException | ClassNotFoundException e){
 					_dataMap = new ConcurrentHashMap<>();
-					_input.close();
+					if(_input != null){
+						_input.close();
+					}
 				}
 			OutputStream outputFile = new FileOutputStream(fileName);
 		    OutputStream outputBuffer = new BufferedOutputStream(outputFile);

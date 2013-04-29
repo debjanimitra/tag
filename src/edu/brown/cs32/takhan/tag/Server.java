@@ -97,9 +97,9 @@ public class Server extends Thread{
 			if(_clientPool.isClientConnected(user)){
 				List<Notification> notifList = dataMap.get(user);
 				ClientHandler handler = _clientPool.getClient(user);
-				Message message = new Message(MessageContent.NOTIFICATION,(Object)notifList);
+				Message message = new Message(MessageContent.NOTIFICATIONLIST,(Object)notifList);
 				handler.pushSend(message);
-				
+				System.out.println("SENT A NOTIFICATION MESSAGE!");
 			}
 		}
 	}

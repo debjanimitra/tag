@@ -99,7 +99,7 @@ public class HTMLParsing {
 			Document doc = Jsoup.connect(dObj.getURL()).get();
 			String change = "false";
 			//check the id
-			if (dObj.getID().length() != 0) {
+			if (dObj.getID().length() > 1) { // CHANGED FROM != 0 !!!!
 				System.out.println(dObj.getID());
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
@@ -114,7 +114,7 @@ public class HTMLParsing {
 				}
 			}
 			//check the class
-			else if (dObj.getClassObject().length() != 0 && change.equals("true")) {
+			else if (dObj.getClassObject().length() > 1 && change.equals("true")) { // CHANGED FROM != 0 !!!!
 				Elements classes = doc.select(dObj.getID());
 				if (classes.size() > 1) {
 					return "lost";
@@ -131,7 +131,7 @@ public class HTMLParsing {
 				}
 			}
 			//check everything
-			else if (dObj.getClassObject().length() == 0 && dObj.getID().length() == 0) {
+			else if (dObj.getClassObject().length() == 1 && dObj.getID().length() == 1) { // CHANGED FROM != 0 !!!!
 				Elements all = doc.select("*");
 				boolean noMatch = false;
 				for (Element e : all) {
