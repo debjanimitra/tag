@@ -61,7 +61,7 @@ public class Server extends Thread{
 				Socket pushConnection = _pushServerSocket.accept();
 				System.out.println("Connected to a client.");
 				if(clientConnection != null){
-					ClientHandler ch = new ClientHandler(clientConnection, pushConnection, _clientPool, database);
+					ClientHandler ch = new ClientHandler(clientConnection, pushConnection, _clientPool, database,checker);
 					ch.start();								
 				}
 			} catch (IOException e) {
@@ -104,5 +104,11 @@ public class Server extends Thread{
 				
 			}
 		}
+	}
+	
+	public void pushUser(List<Notification> toSend, String user){
+		ClientHandler handler = _clientPool.getClient(user);
+		Message message = new Message(MessageContent.NOTIFICATION,(Object)toSend);
+		handler.pushSend(message);
 	}
 }

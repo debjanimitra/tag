@@ -136,8 +136,8 @@ public class Checker extends Thread {
 		}
 	}
 	
-	public synchronized void removeNotification(String notifID){
-		List<Notification> notifList = _notifMap.get(notifID);
+	public synchronized void removeNotification(String notifID, String userID){
+		List<Notification> notifList = _notifMap.get(userID);
 		Notification toRemove = null;
 		for(Notification notif:notifList){
 			if(notif.getID().equals(notifID)){
@@ -146,5 +146,6 @@ public class Checker extends Thread {
 			}
 		}
 		notifList.remove(toRemove);
+		_server.pushUser(notifList, userID);
 	}
 }

@@ -11,6 +11,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 
+import edu.brown.cs32.takhan.tag.Checker;
 import edu.brown.cs32.takhan.tag.Data;
 import edu.brown.cs32.takhan.tag.Database;
 import edu.brown.cs32.takhan.tag.User;
@@ -26,6 +27,7 @@ public class ClientHandler extends Thread {
 	private ObjectOutputStream _pushOutput;
 	private boolean _running;
 	private Database _database;
+	private Checker _checker;
 
 	/**
 	 * Constructs a {@link ClientHandler} on the given client with the given pool.
@@ -36,7 +38,7 @@ public class ClientHandler extends Thread {
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if pool or client is null
 	 */
-	public ClientHandler(Socket clientSocket, Socket pushSocket, ClientPool clientPool, Database database) throws IOException {
+	public ClientHandler(Socket clientSocket, Socket pushSocket, ClientPool clientPool, Database database, Checker checker) throws IOException {
 		if (clientSocket == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
@@ -53,6 +55,7 @@ public class ClientHandler extends Thread {
 		_pushInput = new ObjectInputStream(_pushSocket.getInputStream());		
 
 		_database = database;
+		_checker = checker;
 		_running = true;
 	}
 
