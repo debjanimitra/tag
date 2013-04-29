@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import edu.brown.cs32.vgavriel.connectorOnServer.ClientHandler;
 import edu.brown.cs32.vgavriel.connectorOnServer.ClientPool;
@@ -89,22 +91,18 @@ public class Server extends Thread{
 	 * @param list
 	 * @return 
 	 */
-	public List<Notification> pushNotifications(List<Notification> list){
+	public void pushNotifications(Hashtable<String,List<Notification>> dataMap){
 		
 		System.out.println("yaay");
-		
-		List<Notification> returnList = new ArrayList<>();
-		for(Notification notif:list){
-			if(_clientPool.isClientConnected(notif.getUser())){
-				ClientHandler handler = _clientPool.getClient(notif.getUser());
-				Message message = new Message(MessageContent.NOTIFICATION, (Object) notif);
+		Set<String> users = dataMap.keySet();
+		for(String user:users){
+			if(_clientPool.isClientConnected(user)){
+				List<Notification> notifList = dataMap.get(user);
+				ClientHandler handler = _clientPool.getClient(user);
+				Message message = new Message(MessageContent.NOTIFICATION,(Object)notifList);
 				handler.pushSend(message);
-			}
-			else{
-				returnList.add(notif);
+				
 			}
 		}
-		return returnList;
-		
 	}
 }

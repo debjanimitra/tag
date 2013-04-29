@@ -3,21 +3,22 @@ package edu.brown.cs32.takhan.tag;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.jsoup.HttpStatusException;
 
-import edu.brown.cs32.dcorrea.htmlparsing.*;
+import edu.brown.cs32.dcorrea.htmlparsing.HTMLParsing;
 
 public class Checker extends Thread {
 	
 	private Database _database;
-	private List<Notification> _list;
+	private Hashtable<String,List<Notification>> _notifMap;
 	private Server _server;
 
 	public Checker(Database database, Server server){
 		_database = database;
-		_list = new ArrayList<>();
+		_notifMap = new Hashtable();
 		_server = server;
 	}
 	
@@ -53,8 +54,25 @@ public class Checker extends Thread {
 						update = htmlP.checkUpdate(item);
 						switch(update){
 							case "true":
-								Notification message = new Notification(item.getURL(),item.getUser(), false);
-								_list.add(message);
+								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID());
+								if(!_notifMap.contains(item.getUser())){
+									List<Notification> notifList = new ArrayList<>();
+									notifList.add(message);
+									_notifMap.put(item.getUser(), notifList);
+								}
+								else{
+									List<Notification> list = _notifMap.get(item.getUser());
+									List<Notification> duplicates = new ArrayList<>();
+									for(Notification notif:list){
+										if(notif.getID().equals(message.getID())){
+											duplicates.add(notif);
+										}
+									}
+									for(Notification dup:duplicates){
+										list.remove(dup);
+									}
+									list.add(message);
+								}
 								if(!item.getPerm()){
 									dataList.add(item);
 									_database.updateFile();
@@ -64,8 +82,25 @@ public class Checker extends Thread {
 							case "false":
 								break;
 							case "lost":
-								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true);
-								_list.add(lostMessage);
+								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID());
+								if(!_notifMap.contains(item.getUser())){
+									List<Notification> notifList = new ArrayList<>();
+									notifList.add(lostMessage);
+									_notifMap.put(item.getUser(), notifList);
+								}
+								else{
+									List<Notification> list = _notifMap.get(item.getUser());
+									List<Notification> duplicates = new ArrayList<>();
+									for(Notification notif:list){
+										if(notif.getID().equals(lostMessage.getID())){
+											duplicates.add(notif);
+										}
+									}
+									for(Notification dup:duplicates){
+										list.remove(dup);
+									}
+									list.add(lostMessage);
+								}
 								dataList.add(item);
 								_database.updateFile();
 								//user.removeData(item);
@@ -90,9 +125,7 @@ public class Checker extends Thread {
 				System.out.println("hi");
 			}
 			_database.updateFile();
-			if(!_list.isEmpty()){
-				_list = _server.pushNotifications(_list);
-			}
+			_server.pushNotifications(_notifMap);
 			
 			try {
 				Thread.sleep(5000);
@@ -101,5 +134,17 @@ public class Checker extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public synchronized void removeNotification(String notifID){
+		List<Notification> notifList = _notifMap.get(notifID);
+		Notification toRemove = null;
+		for(Notification notif:notifList){
+			if(notif.getID().equals(notifID)){
+				toRemove = notif;
+				break;
+			}
+		}
+		notifList.remove(toRemove);
 	}
 }

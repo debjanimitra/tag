@@ -1,9 +1,6 @@
 package edu.brown.cs32.takhan.tag;
 import java.io.Serializable;
-
-import org.jsoup.*;
-import org.jsoup.nodes.*;
-import org.jsoup.select.Elements;
+import java.util.Date;
 
 public class Data implements TagData, Serializable{ // might need to implement Serializable
 
@@ -17,6 +14,7 @@ public class Data implements TagData, Serializable{ // might need to implement S
 	private String _classname;
 	private String _title;
 	private boolean _canBePermanent;
+	private String _dataID;
 	
 	public Data(String text, String url, String id, String classname, String username, String docBody, String title, boolean perm, boolean canBePermanent){
 		_text = text;
@@ -28,10 +26,15 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_docBody = docBody;
 		_title = title;
 		_canBePermanent=canBePermanent;
+		_dataID = Long.toString(new Date().getTime());
 	}
 	
 	public String getDocBody() {
 		return _docBody;
+	}
+	
+	public String getDataID(){
+		return _dataID;
 	}
 	
 	public void setClass(String objClass){
