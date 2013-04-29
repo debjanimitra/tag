@@ -18,7 +18,7 @@ public class Checker extends Thread {
 
 	public Checker(Database database, Server server){
 		_database = database;
-		_notifMap = new Hashtable();
+		_notifMap = new Hashtable<>();
 		_server = server;
 	}
 	
@@ -136,7 +136,7 @@ public class Checker extends Thread {
 		}
 	}
 	
-	public synchronized void removeNotification(String notifID, String userID){
+	public synchronized List<Notification> deleteNotification(String notifID, String userID){
 		List<Notification> notifList = _notifMap.get(userID);
 		Notification toRemove = null;
 		for(Notification notif:notifList){
@@ -145,7 +145,16 @@ public class Checker extends Thread {
 				break;
 			}
 		}
-		notifList.remove(toRemove);
-		_server.pushUser(notifList, userID);
+		if(toRemove != null){
+			notifList.remove(toRemove);
+		} else {
+			System.err.println("The client wants to remove a notification with");
+			System.err.println("the ID: " + notifID + " but it was not found on the server");
+		}
+		return notifList;
+	}
+	
+	public synchronized List<Notification> getNotifications(String userID){
+		return _notifMap.get(userID);
 	}
 }

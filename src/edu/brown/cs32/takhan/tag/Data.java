@@ -26,7 +26,7 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_docBody = docBody;
 		_title = title;
 		_canBePermanent=canBePermanent;
-		_dataID = Long.toString(new Date().getTime());
+		_dataID = _username + Long.toString(new Date().getTime());
 	}
 	
 	public String getDocBody() {

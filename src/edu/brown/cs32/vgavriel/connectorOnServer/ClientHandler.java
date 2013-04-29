@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -14,6 +15,7 @@ import com.google.common.collect.ListMultimap;
 import edu.brown.cs32.takhan.tag.Checker;
 import edu.brown.cs32.takhan.tag.Data;
 import edu.brown.cs32.takhan.tag.Database;
+import edu.brown.cs32.takhan.tag.Notification;
 import edu.brown.cs32.takhan.tag.User;
 
 public class ClientHandler extends Thread {
@@ -162,17 +164,44 @@ public class ClientHandler extends Thread {
 			/**
 			 * TODO: message has an instance of Data, so process it and return a confirmation
 			 */
-			// break; never reached
+			//break; //never reached?
 		case GET_WEBTAGS:
-			return new Message(MessageContent.DONE_GETWEBTAGS, (Object) _database.getUser(_userID).getDataMap());
+			ListMultimap<String, Data> toSendWebtags = _database.getUser(_userID).getDataMap();
+			if(toSendWebtags != null){
+				return new Message(MessageContent.DONE_GETWEBTAGS, (Object) toSendWebtags);
+			} else {
+				return new Message(MessageContent.ERROR_GETWEBTAGS_UNKNOWNUSER, null);
+			}
+			//break;
 		case UPDATE_WEBTAGS:
 			if(message.getObject() != null){
 				_database.getUser(_userID).setDataMap((ListMultimap<String,Data>) message.getObject());
 				_database.updateFile();
-				return new Message(MessageContent.DONE_UPDATEWEBTAGS, (Object) _database.getUser(_userID).getDataMap());
+				return new Message(MessageContent.DONE_UPDATEWEBTAGS, null);
 			} else {
 				return new Message(MessageContent.ERROR_UPDATINGWEBTAGS, null);
 			}
+			//break;
+		case GET_NOTIFICATIONS:
+			List<Notification> toSendNotifications = _checker.getNotifications(_userID);
+			if(toSendNotifications != null){
+				return new Message(MessageContent.DONE_GETNOTIFICATIONS, (Object) toSendNotifications);
+			} else {
+				return new Message(MessageContent.ERROR_GETNOTIFICATIONS_UNKNOWNUSER, null);
+			}
+			//break;
+		case DELETE_NOTIFICATION:
+			if(message.getObject() != null){
+				String toDeleteID = (String) message.getObject();
+				List<Notification> toReSendNotifications = _checker.deleteNotification(toDeleteID, _userID);
+				if(toReSendNotifications != null){
+					return new Message(MessageContent.DONE_DELETENOTIFICATION, (Object) toReSendNotifications);
+				}
+			}
+			else {
+				return new Message(MessageContent.ERROR_GETNOTIFICATIONS_UNKNOWNUSER, null);
+			}
+			//break;
 		default:
 			return new Message(MessageContent.ERROR_RECEIVE_INVALIDDATA, null);
 			/**

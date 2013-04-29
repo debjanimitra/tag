@@ -53,8 +53,6 @@ public class Server extends Thread{
 		Database database = new Database();
 		Checker checker = new Checker(database,this);
 		checker.start();
-		User user = new User("takhan");
-		database.addUser(user, user.getID());
 		while(_running){
 			try {
 				Socket clientConnection = _standardServerSocket.accept();
@@ -105,10 +103,10 @@ public class Server extends Thread{
 			}
 		}
 	}
-	
+	/*
 	public void pushUser(List<Notification> toSend, String user){
 		ClientHandler handler = _clientPool.getClient(user);
 		Message message = new Message(MessageContent.NOTIFICATION,(Object)toSend);
 		handler.pushSend(message);
-	}
+	}*/
 }
