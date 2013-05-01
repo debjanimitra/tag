@@ -57,11 +57,11 @@ public class Checker extends Thread {
 						switch(update){
 							case "true":
 								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID(), item.getTitle());
+								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(message);
 									_notifMap.put(item.getUser(), notifList);
-									hasNotifChanged = true;
 								}
 								else{
 									List<Notification> list = _notifMap.get(item.getUser());
@@ -86,11 +86,11 @@ public class Checker extends Thread {
 								break;
 							case "lost":
 								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID(), item.getTitle());
+								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(lostMessage);
 									_notifMap.put(item.getUser(), notifList);
-									hasNotifChanged = true;
 								}
 								else{
 									List<Notification> list = _notifMap.get(item.getUser());
