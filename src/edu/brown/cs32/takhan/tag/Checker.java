@@ -37,7 +37,9 @@ public class Checker extends Thread {
 				users.add(u);
 			}
 			List<Data> dataList = new ArrayList<>();
+			boolean hasNotifChanged;
 			for(User user:users){
+				hasNotifChanged = false;
 				Collection<Data> dataC = user.getAllData();
 				List<Data> data = new ArrayList<>();
 				for(Data d:dataC) {
@@ -59,6 +61,7 @@ public class Checker extends Thread {
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(message);
 									_notifMap.put(item.getUser(), notifList);
+									hasNotifChanged = true;
 								}
 								else{
 									List<Notification> list = _notifMap.get(item.getUser());
@@ -87,6 +90,7 @@ public class Checker extends Thread {
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(lostMessage);
 									_notifMap.put(item.getUser(), notifList);
+									hasNotifChanged = true;
 								}
 								else{
 									List<Notification> list = _notifMap.get(item.getUser());
@@ -117,6 +121,9 @@ public class Checker extends Thread {
 					
 				}
 				
+				if(hasNotifChanged){
+					_server.pushNotifications(_notifMap, user.getID());
+				}
 			}
 			for(Data tag:dataList){
 				String user = tag.getUser();
@@ -125,14 +132,11 @@ public class Checker extends Thread {
 				System.out.println("hi");
 			}
 			_database.updateFile();
-			_server.pushNotifications(_notifMap);
+			
 			
 			try {
 				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) {}
 		}
 	}
 	
