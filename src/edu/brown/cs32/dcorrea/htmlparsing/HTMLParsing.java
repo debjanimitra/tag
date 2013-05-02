@@ -17,14 +17,10 @@ public class HTMLParsing {
 	private Document _doc;
 	private String _url;
 	
-	public HTMLParsing(String url) throws UnknownHostException, HttpStatusException {
-		try {
-			_url = url;
-			_doc = Jsoup.connect(url).get();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public HTMLParsing(String url) throws UnknownHostException, HttpStatusException, IOException {
+		_url = url;
+		_doc = Jsoup.connect(url).get();
+		
 	}
 	
 	/*
