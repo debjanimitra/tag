@@ -4,6 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="/course/cs032/asgn/battleship/lib/guava-13.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/gpfs/main/course/cs032/asgn/battleship/lib/junit-4.11.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="/gpfs/main/home/dm26/Downloads/jsoup-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/home/takhan/Downloads/jsoup-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/gpfs/main/home/takhan/Downloads/commons-net-3.2/commons-net-3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -131,7 +131,7 @@ public class HTMLParsing {
 				}
 			}
 			//check everything
-			else if (dObj.getClassObject().length() == 1 && dObj.getID().length() == 1) { // CHANGED FROM != 0 !!!!
+			else if (dObj.getClassObject().length() == 1 && dObj.getID().length() == 1) { // CHANGED FROM == 0 !!!!
 				Elements all = doc.select("*");
 				boolean noMatch = false;
 				for (Element e : all) {

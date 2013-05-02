@@ -81,26 +81,26 @@ public class Server extends Thread{
 		_standardServerSocket.close();
 		_pushServerSocket.close();
 	}
-	
+
 	/**
-	 * Sends notifications to the clients that are currently
-	 * connected to the server. Returns the list of all the
-	 * remaining notifications. 
+	 * Sends notifications to the specified client if it is currently
+	 * connected to the server.
+	 * @param dataMap:  
 	 * @param list
-	 * @return 
 	 */
-	public void pushNotifications(Hashtable<String,List<Notification>> dataMap){
-		
+	public void pushNotifications(Hashtable<String,List<Notification>> dataMap, String user){
+
 		System.out.println("yaay");
-		Set<String> users = dataMap.keySet();
-		for(String user:users){
-			if(_clientPool.isClientConnected(user)){
-				List<Notification> notifList = dataMap.get(user);
-				ClientHandler handler = _clientPool.getClient(user);
-				Message message = new Message(MessageContent.NOTIFICATIONLIST,(Object)notifList);
-				handler.pushSend(message);
-				System.out.println("SENT A NOTIFICATION MESSAGE!");
+
+		if(_clientPool.isClientConnected(user)){
+			List<Notification> notifList = dataMap.get(user);
+			if(notifList == null){
+				return;
 			}
+			ClientHandler handler = _clientPool.getClient(user);
+			Message message = new Message(MessageContent.NOTIFICATIONLIST,(Object)notifList);
+			handler.pushSend(message);
+			System.out.println("SENT A NOTIFICATION MESSAGE!");
 		}
 	}
 	/*

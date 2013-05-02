@@ -37,7 +37,9 @@ public class Checker extends Thread {
 				users.add(u);
 			}
 			List<Data> dataList = new ArrayList<>();
+			boolean hasNotifChanged;
 			for(User user:users){
+				hasNotifChanged = false;
 				Collection<Data> dataC = user.getAllData();
 				List<Data> data = new ArrayList<>();
 				for(Data d:dataC) {
@@ -55,6 +57,7 @@ public class Checker extends Thread {
 						switch(update){
 							case "true":
 								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID(), item.getTitle());
+								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(message);
@@ -83,6 +86,7 @@ public class Checker extends Thread {
 								break;
 							case "lost":
 								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID(), item.getTitle());
+								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
 									notifList.add(lostMessage);
@@ -117,6 +121,9 @@ public class Checker extends Thread {
 					
 				}
 				
+				if(hasNotifChanged){
+					_server.pushNotifications(_notifMap, user.getID());
+				}
 			}
 			for(Data tag:dataList){
 				String user = tag.getUser();
@@ -125,14 +132,11 @@ public class Checker extends Thread {
 				System.out.println("hi");
 			}
 			_database.updateFile();
-			_server.pushNotifications(_notifMap);
+			
 			
 			try {
 				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) {}
 		}
 	}
 	

@@ -8,9 +8,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
 
+import org.apache.commons.net.util.Base64;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-
 
 import edu.brown.cs32.takhan.tag.Checker;
 import edu.brown.cs32.takhan.tag.Data;
@@ -72,12 +73,16 @@ public class ClientHandler extends Thread {
 		Message message = (Message) _standardInput.readObject();
 		String userID;
 		// normal login:
-		if(message != null && message.getContent() == MessageContent.USERID && (userID = (String) message.getObject()) != null){
+		if(message != null && message.getContent() == MessageContent.USERID && (userID = (((String) message.getObject()).split("\t"))[0]) != null){
 			_userID = userID;
 			if(_database.hasUser(_userID)){
+				String encodedPassword = (((String) message.getObject()).split("\t"))[1].toString();
 				if(_clientPool.isClientConnected(_userID)){
 					this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_MULTIPLELOGINS, null));
 					return false;
+				}
+				else if(!_database.getUser(_userID).getPassword().equals(Base64.decodeBase64(encodedPassword))){
+					this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_WRONGPASSWORD,null));
 				}
 				_clientPool.add(_userID, this);
 				this.normalSend(new Message(MessageContent.DONE, null));
@@ -87,10 +92,13 @@ public class ClientHandler extends Thread {
 			}			
 		}
 		// registration:
-		else if(message != null && message.getContent() == MessageContent.NEWUSERID && (userID = (String) message.getObject()) != null){
+		else if(message != null && message.getContent() == MessageContent.NEWUSERID && (userID = (((String) message.getObject()).split("\t"))[0]) != null){
 			_userID = userID;
 			if(!_database.hasUser(_userID)){
-				_database.addUser(new User(_userID), _userID);
+				User newUser = new User(_userID);
+				String encodedPassword = (((String) message.getObject()).split("\t"))[1];
+				newUser.setPassword(Base64.decodeBase64(encodedPassword).toString());
+				_database.addUser(newUser, _userID);
 				_clientPool.add(_userID, this);
 				this.normalSend(new Message(MessageContent.DONE, null));
 			} else {
