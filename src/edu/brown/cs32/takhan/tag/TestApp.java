@@ -6,12 +6,9 @@ public class TestApp {
 
 	
 	public TestApp(){
-		try {
-			Server server = new Server(2000);
-			server.run();
-		} catch (IOException e) {
-			System.err.println("Problem");
-		}
+		String hi = "i        t";
+		String[] split = hi.split("\t");
+		System.out.println(split.length);
 	}
 	/**
 	 * @param args
