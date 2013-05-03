@@ -1,5 +1,6 @@
 package edu.brown.cs32.takhan.tag;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -117,6 +118,8 @@ public class Checker extends Thread {
 					} catch (UnknownHostException | HttpStatusException e) {
 						// this should never happen except the website goes off
 
+					} catch (IOException e) {// TODO David: HTMLParing constructor throws this! (Viktor)
+						
 					}
 					
 				}
