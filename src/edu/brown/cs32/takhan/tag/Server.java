@@ -90,7 +90,6 @@ public class Server extends Thread{
 	 */
 	public void pushNotifications(Hashtable<String,List<Notification>> dataMap, String user){
 
-		System.out.println("yaay");
 
 		if(_clientPool.isClientConnected(user)){
 			List<Notification> notifList = dataMap.get(user);
@@ -100,7 +99,6 @@ public class Server extends Thread{
 			ClientHandler handler = _clientPool.getClient(user);
 			Message message = new Message(MessageContent.NOTIFICATIONLIST,(Object)notifList);
 			handler.pushSend(message);
-			System.out.println("SENT A NOTIFICATION MESSAGE!");
 		}
 	}
 	/*

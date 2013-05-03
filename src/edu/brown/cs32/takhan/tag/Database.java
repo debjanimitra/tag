@@ -74,8 +74,6 @@ public class Database{
 	
 	public synchronized void updateFile(){
 		try {
-			System.out.println("File updating");
-			System.out.println("Writing to file size: "+_dataMap.size());
 			_output.close();
 			_outputBuffer.close();
 			_outputFile.close();

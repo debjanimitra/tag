@@ -132,7 +132,6 @@ public class Checker extends Thread {
 				String user = tag.getUser();
 				User person = _database.getUser(user);
 				person.removeData(tag);
-				System.out.println("hi");
 			}
 			_database.updateFile();
 			

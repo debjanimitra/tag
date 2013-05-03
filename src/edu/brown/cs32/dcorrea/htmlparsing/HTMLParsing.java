@@ -96,7 +96,7 @@ public class HTMLParsing {
 			String change = "false";
 			//check the id
 			if (dObj.getID().length() > 1) { // CHANGED FROM != 0 !!!!
-				System.out.println(dObj.getID());
+				
 				Elements id = doc.select(dObj.getID());
 				for (Element e : id) {
 					String text = e.text();
@@ -172,7 +172,6 @@ public class HTMLParsing {
 		ElementInfo elInfo = new ElementInfo();
 		if (el.id().length() != 0) {
 			elInfo.setID("#"+el.id());
-			System.out.println("#"+el.id());
 			elInfo.setPerm(true);
 			return elInfo;
 		}
@@ -181,9 +180,7 @@ public class HTMLParsing {
 			if (c.length() == 0) {
 				break;
 			}
-			System.out.println("."+c);
 			Elements elms = _doc.select("."+c);
-			System.out.println("."+c);
 			if (elms.size() == 1) {
 				elInfo.setElementClass("."+c);
 				elInfo.setPerm(true);

@@ -75,6 +75,7 @@ public class ClientHandler extends Thread {
 		// normal login:
 		if(message != null && message.getContent() == MessageContent.USERID && (userID = (((String) message.getObject()).split("\t"))[0]) != null){
 			_userID = userID;
+			System.out.println(("User logging in is: "+(((String) message.getObject()).split("\t"))[0]));
 			if(_database.hasUser(_userID)){
 				String encodedPassword = (((String) message.getObject()).split("\t"))[1];
 				if(_clientPool.isClientConnected(_userID)){
