@@ -15,6 +15,7 @@ public class Data implements TagData, Serializable{ // might need to implement S
 	private String _title;
 	private boolean _canBePermanent;
 	private String _dataID;
+	private boolean _email;
 	
 	public Data(String text, String url, String id, String classname, String username, String docBody, String title, boolean perm, boolean canBePermanent){
 		_text = text;
@@ -27,6 +28,7 @@ public class Data implements TagData, Serializable{ // might need to implement S
 		_title = title;
 		_canBePermanent=canBePermanent;
 		_dataID = _username + Long.toString(new Date().getTime());
+		_email = true;
 	}
 	
 	public String getDocBody() {
@@ -35,6 +37,14 @@ public class Data implements TagData, Serializable{ // might need to implement S
 	
 	public String getDataID(){
 		return _dataID;
+	}
+	
+	public boolean getEmail(){
+		return _email;
+	}
+	
+	public void setEmail(boolean email){
+		_email = email;
 	}
 	
 	public void setClass(String objClass){

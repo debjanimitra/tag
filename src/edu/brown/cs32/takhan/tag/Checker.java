@@ -58,6 +58,9 @@ public class Checker extends Thread {
 						switch(update){
 							case "true":
 								Notification message = new Notification(item.getURL(),item.getUser(), false,item.getDataID(), item.getTitle());
+								if(item.getEmail()){
+									Email.sendEmail(user.getEmail(), "Trakr has found a notification for the website "+item.getURL());
+								}
 								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();
@@ -87,6 +90,9 @@ public class Checker extends Thread {
 								break;
 							case "lost":
 								Notification lostMessage = new Notification(item.getURL(),item.getUser(),true,item.getDataID(), item.getTitle());
+								if(item.getEmail()){
+									Email.sendEmail(user.getEmail(), "Trakr has found a notification for the website "+item.getURL()+" but is no longer tracking this");
+								}
 								hasNotifChanged = true;
 								if(!_notifMap.contains(item.getUser())){
 									List<Notification> notifList = new ArrayList<>();

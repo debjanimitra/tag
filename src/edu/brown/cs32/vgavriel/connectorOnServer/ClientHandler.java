@@ -104,7 +104,9 @@ public class ClientHandler extends Thread {
 			if(!_database.hasUser(_userID)){
 				User newUser = new User(_userID);
 				String encodedPassword = (((String) message.getObject()).split("\t"))[1];
+				String email = (((String) message.getObject()).split("\t"))[2];
 				newUser.setPassword(new String(Base64.decodeBase64(encodedPassword)));
+				newUser.setEmail(email);
 				System.out.println("Password being set to: "+newUser.getPassword());
 				_database.addUser(newUser, _userID);
 				_clientPool.add(_userID, this);

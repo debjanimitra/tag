@@ -49,7 +49,6 @@ public class Server extends Thread{
 	 * Wait for and handle connections indefinitely.
 	 */
 	public void run() {
-		//Email.sendEmail("tak93@live.com", "Yayyy");
 		_running = true;
 		Database database = new Database();
 		Checker checker = new Checker(database,this);
