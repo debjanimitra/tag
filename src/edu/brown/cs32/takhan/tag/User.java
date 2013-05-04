@@ -15,6 +15,7 @@ public class User implements Serializable{ // might need to implement Serializab
 	private String _userID;
 	private String _password;
 	private ListMultimap<String,Data> _dataMap;
+	private String _email;
 	
 	
 	public User(String id){
@@ -28,6 +29,21 @@ public class User implements Serializable{ // might need to implement Serializab
 	 */
 	public void setPassword(String string){
 		_password = string;
+	}
+	
+	/**
+	 * Sets email to the string passed in
+	 */
+	public void setEmail(String mail){
+		_email = mail;
+	}
+	
+	/**
+	 * Return the user's email
+	 * @return
+	 */
+	public String getEmail(){
+		return _email;
 	}
 	
 	/**
