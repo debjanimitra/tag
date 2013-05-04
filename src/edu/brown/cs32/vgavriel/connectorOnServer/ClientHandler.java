@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.net.util.Base64;
@@ -76,6 +77,10 @@ public class ClientHandler extends Thread {
 		if(message != null && message.getContent() == MessageContent.USERID && (userID = (((String) message.getObject()).split("\t"))[0]) != null){
 			_userID = userID;
 			System.out.println(("User logging in is: "+(((String) message.getObject()).split("\t"))[0]));
+			Collection<User> log = _database.getAllUsers();
+			for(User person:log){
+				System.out.println("Guy: "+person.getID());
+			}
 			if(_database.hasUser(_userID)){
 				String encodedPassword = (((String) message.getObject()).split("\t"))[1];
 				if(_clientPool.isClientConnected(_userID)){
