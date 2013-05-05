@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
 	public static void main(String args[]){
-		int port = 6000;
+		int port = 5000;
 		if(args.length == 1){
 			try{
 				port = Integer.parseInt(args[0]);

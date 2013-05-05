@@ -71,7 +71,9 @@ public class ClientHandler extends Thread {
 	 * @throws IOException
 	 */
 	public boolean handShake() throws ClassNotFoundException, IOException{
+		System.out.println("I like rice");
 		Message message = (Message) _standardInput.readObject();
+		System.out.println("The message inside the handshake is: "+ message.getContent());
 		String userID;
 		// normal login:
 		if(message != null && message.getContent() == MessageContent.USERID && (userID = (((String) message.getObject()).split("\t"))[0]) != null){
@@ -89,8 +91,10 @@ public class ClientHandler extends Thread {
 				}
 				else if(!_database.getUser(_userID).getPassword().equals(new String(Base64.decodeBase64(encodedPassword)))){
 					this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_WRONGPASSWORD,null));
+					return false;
 				}
 				_clientPool.add(_userID, this);
+				System.out.println("Password:" + new String(Base64.decodeBase64(encodedPassword)));
 				this.normalSend(new Message(MessageContent.DONE, null));
 			} else {
 				this.normalSend(new Message(MessageContent.ERRORHANDSHAKE_UNKNOWNUSER, null));
@@ -130,9 +134,15 @@ public class ClientHandler extends Thread {
 	public void run() {
 		try {
 			// HANDSHAKE:
-			while(!handShake()){}		
+			System.out.println("I like noodles");
+			boolean hS;
+			while(!(hS = handShake())){
+				System.out.println("inside the loop" + hS);
+			}		
+			System.out.println("outside the loop" + hS);
 			// POST HANDSHAKE:
 			Message message = (Message) _standardInput.readObject();
+			System.out.println("The message after the handshake is: "+ message.getContent());
 			while(message != null){
 				Message toSend = processMessage(message);
 				if(toSend.getContent() == MessageContent.DONE_GETWEBTAGS){
