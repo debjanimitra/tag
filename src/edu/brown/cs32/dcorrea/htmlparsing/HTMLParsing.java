@@ -1,6 +1,7 @@
 package edu.brown.cs32.dcorrea.htmlparsing;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,7 +43,7 @@ public class HTMLParsing {
 		for (Element e : links) {
 			String text = e.text().toLowerCase();
 			//Storing process
-			if (text.contains(enteredText)) {
+			if (text.contains(enteredText) || text.equals(enteredText)) {
 				if (hm.get(text)==null){
 					hm.put(text, e);
 				}
@@ -52,7 +53,7 @@ public class HTMLParsing {
 		for (Element e : divs) {
 			String text = e.text().toLowerCase();
 			//Storing process
-			if (text.contains(enteredText)) {
+			if (text.contains(enteredText) || text.equals(enteredText)) {
 				if (hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
 					hm.put(text, e);
 				}
@@ -62,7 +63,7 @@ public class HTMLParsing {
 		for (Element e : listEls) {
 			String text = e.text().toLowerCase();
 			//Storing process
-			if (text.contains(enteredText)) {
+			if (text.contains(enteredText) || text.equals(enteredText)) {
 				if (hm.get(text)==null || hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
 					hm.put(text, e);
 				}
@@ -72,7 +73,7 @@ public class HTMLParsing {
 		for (Element e : paragraphs) {
 			String text = e.text().toLowerCase();
 			//Storing process
-			if (text.contains(enteredText)) {
+			if (text.contains(enteredText) || text.equals(enteredText)) {
 				if (hm.get(text)==null || hm.get(text)==null || (hm.get(text).id().length()<0 && hm.get(text).className().length()<0)){
 					hm.put(text, e);
 				}
@@ -146,9 +147,12 @@ public class HTMLParsing {
 			}
 			//If the element is not there we should notify the user
 			return change;
-		} catch (IOException e) {
+			
+		} catch (SocketTimeoutException e) {
+			//WE NEED  A POP UP that says: We were unable to connect, make sure the url you provided is
+			//not redeirecting us to a different website.
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return "lost";
 	}
