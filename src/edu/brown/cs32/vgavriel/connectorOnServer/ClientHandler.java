@@ -134,12 +134,12 @@ public class ClientHandler extends Thread {
 	public void run() {
 		try {
 			// HANDSHAKE:
-			System.out.println("I like noodles");
-			boolean hS;
-			while(!(hS = handShake())){
-				System.out.println("inside the loop" + hS);
+			while(!handShake()){
 			}		
-			System.out.println("outside the loop" + hS);
+			List<Notification> toSendNotif = _checker.getNotifications(_userID);
+			if(toSendNotif != null){
+				pushSend(new Message(MessageContent.NOTIFICATIONLIST, (Object) toSendNotif));
+			}
 			// POST HANDSHAKE:
 			Message message = (Message) _standardInput.readObject();
 			System.out.println("The message after the handshake is: "+ message.getContent());

@@ -21,6 +21,17 @@ public class HTMLParsing {
 	public HTMLParsing(String url) throws UnknownHostException, HttpStatusException, IOException {
 		_url = url;
 		_doc = Jsoup.connect(url).get();
+		if (_doc.body() == null) {
+			Elements fr = _doc.select("frame");
+			Element frame = fr.first();
+			_doc = Jsoup.connect(frame.attr("src")).get();
+		}
+		/*Elements fr = _doc.select("frame");
+		Element frame = fr.first();
+		System.out.println(frame.attr("src"));
+		_doc = Jsoup.connect(frame.attr("src")).get();
+		System.out.println(_doc);*/
+		//System.out.println(_doc.body().text());
 		
 	}
 	
@@ -92,69 +103,59 @@ public class HTMLParsing {
 	 * [3] = text
 	 */
 	public String checkUpdate(Data dObj) {
-		try {
-			Document doc = Jsoup.connect(dObj.getURL()).get();
-			String change = "false";
-			//check the id
-			if (dObj.getID().length() > 1) { // CHANGED FROM != 0 !!!!
-				
-				Elements id = doc.select(dObj.getID());
-				for (Element e : id) {
-					String text = e.text();
-					if (!text.equals(dObj.getText())) {
-						change = "true";
-						if (dObj.getPerm()) {
-							dObj.setText(text);
-						}
-						//what should we return?
-					}
-				}
-			}
-			//check the class
-			else if (dObj.getClassObject().length() > 1 && change.equals("true")) { // CHANGED FROM != 0 !!!!
-				Elements classes = doc.select(dObj.getID());
-				if (classes.size() > 1) {
-					return "lost";
-				}
-				for (Element e : classes) {
-					String text = e.text();
-					if (!text.equals(dObj.getText())) {
-						change = "true"; 
-						if (dObj.getPerm()) {
-							dObj.setText(text);
-						}
-						//what should we return? 
-					}
-				}
-			}
-			//check everything
-			else if (dObj.getClassObject().length() == 1 && dObj.getID().length() == 1) { // CHANGED FROM == 0 !!!!
-				Elements all = doc.select("*");
-				boolean noMatch = false;
-				for (Element e : all) {
-					String text = e.text();
-					if (text.equals(dObj.getText())) { 
-						noMatch = true;
-						//what should we return?
-					}
-				}
-				if (!noMatch) {
+		//Document doc = Jsoup.connect(dObj.getURL()).get();
+		String change = "false";
+		//check the id
+		if (dObj.getID().length() > 1) { // CHANGED FROM != 0 !!!!
+			Elements id = _doc.select(dObj.getID());
+			for (Element e : id) {
+				String text = e.text();
+				if (!text.equals(dObj.getText())) {
 					change = "true";
-				}
-				if (!change.equals("true")) {
-					change = this.checkForAddition(dObj);
+					if (dObj.getPerm()) {
+						dObj.setText(text);
+					}
+					//what should we return?
 				}
 			}
-			//If the element is not there we should notify the user
-			return change;
-			
-		} catch (SocketTimeoutException e) {
-			//WE NEED  A POP UP that says: We were unable to connect, make sure the url you provided is
-			//not redeirecting us to a different website.
-		}catch (IOException e) {
-			// TODO Auto-generated catch block
 		}
-		return "lost";
+		//check the class
+		else if (dObj.getClassObject().length() > 1 && change.equals("false")) { // CHANGED FROM != 0 !!!!
+			Elements classes = _doc.select(dObj.getClassObject());
+			if (classes.size() > 1) {
+				return "lost";
+			}
+			for (Element e : classes) {
+				String text = e.text();
+				if (!text.equals(dObj.getText())) {
+					change = "true"; 
+					if (dObj.getPerm()) {
+						dObj.setText(text);
+					}
+					//what should we return? 
+				}
+			}
+		}
+		//check everything
+		else if (dObj.getClassObject().length() == 1 && dObj.getID().length() == 1) { // CHANGED FROM == 0 !!!!
+			Elements all = _doc.select("*");
+			boolean noMatch = false;
+			for (Element e : all) {
+				String text = e.text();
+				if (text.equals(dObj.getText())) { 
+					noMatch = true;
+					//what should we return?
+				}
+			}
+			if (!noMatch) {
+				change = "true";
+			}
+			if (!change.equals("true")) {
+				change = this.checkForAddition(dObj);
+			}
+		}
+		//If the element is not there we should notify the user
+		return change;
 	}
 	
 	public Document getDocument(){
